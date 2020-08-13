@@ -49,3 +49,11 @@ I assume you use anaconda envrionment to call. Then, you should change anaconda 
 ```
 conda activate [name of envrionment]
 ```
+
+Also, you should add below path as envrionment path on `~/.bashrc` becasue some condor nodes can not find `bin` and `condor` setup.
+```
+export PATH=/lusr/opt/condor/bin${PATH:+:${PATH}}$
+export PATH=/bin${PATH:+:${PATH}}$
+```
+## warning
+If you want to change some bash script, generate bash script, please set up `#!/bin/bash`, not `#!/bin/sh`. It may not works for RCRS.
