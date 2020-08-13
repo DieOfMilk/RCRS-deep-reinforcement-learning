@@ -21,4 +21,19 @@ First, you need to compile rcrs-server and rcrs-adf files. Open `rcrs-server` an
 ./gradlew clean
 ./gradlew completeBuild
 ```
-Then, open `
+Then, open `rcrs-grpc-demo` and compile
+```
+./gradlew clean
+./gradlew installDist
+```
+Then, register RCRS environment as python package. Open `script/gym-RCRS` and compile
+```
+python3 -m pip install -e .
+```
+## 3. How to run
+You should run your codes on `script` folder as root terminal. 
+You can test the codes with PPO model of stable baselines using `modify_PPO2.py`.
+```
+python3 modify_PPO2.py
+```
+If you want to see how simulator works, set `verbose=True` when you call env.
