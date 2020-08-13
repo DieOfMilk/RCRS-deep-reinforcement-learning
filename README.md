@@ -37,3 +37,15 @@ You can test the codes with PPO model of stable baselines using `modify_PPO2.py`
 python3 modify_PPO2.py
 ```
 If you want to see how simulator works, set `verbose=True` when you call env.
+```
+env = gym.make("RCRS-v0", portNo=portNo, grpcNo=grpcNo, buildingNo=37, maxTimeStamp=98,mapName=mapName,verbose=True) (line 181)
+```
+
+## 4. How to run on condor
+
+You can see the sample files at `script/condor_scripts/`. 
+However, you should change the `Executable` path of condor files. I suggest you to put the `.condor` files outside of `script` folder. 
+I assume you use anaconda envrionment to call. Then, you should change anaconda envrionment name on `script/condor_scripts/start.sh`
+```
+conda activate [name of envrionment]
+```
