@@ -24,7 +24,6 @@ from tensorboard.backend.event_processing.event_accumulator import EventAccumula
 import pickle
 import shutil
 from stable_baselines.bench import Monitor
-import ipdb
 
 class myPPO2(PPO2):
     def mylearn(self, save_path, total_timesteps, callback=None, log_interval=1, tb_log_name="PPO2", reset_num_timesteps=False):
@@ -179,7 +178,7 @@ if __name__=='__main__':
     grpcNo= input("grpc No")
     mapName = input("input map name")
     learning_rate = float(input("learning_rate"))
-    env = gym.make("RCRS-v0", portNo=portNo, grpcNo=grpcNo, buildingNo=37, maxTimeStamp=98,mapName=mapName)
+    env = gym.make("RCRS-v0", portNo=portNo, grpcNo=grpcNo, buildingNo=37, maxTimeStamp=98,mapName=mapName, verbose=False)
     # model =DQN('MlpPolicy', env, learning_rate=3e-4, prioritized_replay=True, verbose=0,tensorboard_log="./tmp/tensor/Env_test2")
     # env = Monitor(env, log_dir, allow_early_resets=True)
     temp = env
