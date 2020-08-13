@@ -1,0 +1,18 @@
+Universe = vanilla
+Executable = /u/milk/bin/script/start.sh
+requirements = (has_avx2 == true || has_avx == true)
++ProjectDescription = "Learn how to use condor"
++Project = "OTHER"
++Group = "GRAD"
+Notification = never
+Notify_user = milk@cs.utexas.edu
+Output     = script/condor/out.$(Process)
+Error      = script/condor/err.$(Process)
+Log        = script/condor/$(Process).log
+
+
+Queue 1
+
+
+
+

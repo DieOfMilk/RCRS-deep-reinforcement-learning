@@ -1,0 +1,19 @@
+Universe = vanilla
+Executable = /u/milk/bin/script/start.sh
+requirements = (GPUs >= 1)
++ProjectDescription = "Learn how to use condor"
++Project = "OTHER"
++Group = "GRAD"
+Notification = never
+Notify_user = milk@cs.utexas.edu
+Input = condor/in.$(Process)
+Output     = condor/out.$(Process)
+Error      = condor/err.$(Process)
+Log        = condor/$(Process).log
+
+
+Queue 30
+
+
+
+

@@ -1,0 +1,8 @@
+def waittest(driver, locator, attr, value):
+    element = driver.find_element_by_xpath(locator)
+    if element.get_attribute(attr) == value:
+        return element
+    else:
+        return False
+wait = WebDriverWait(driver, 10)
+element = wait.until(waittest(driver, '//div[@id="text"]', "myCSSClass", "fal

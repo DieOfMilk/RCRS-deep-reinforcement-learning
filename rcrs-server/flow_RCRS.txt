@@ -1,0 +1,188 @@
+
+
+the clear simulator, responsible for blockade removal;
+• the collapse simulator, responsible for managing buildings’ structural damage and blockade creation;
+• the ignition simulator, responsible for firing up random buildings during the simulation;
+• the fire simulator, responsible for the fire spread between buildings;
+• the traffic simulator, responsible for humans’ movement;
+• the misc simulator, responsible for human damage and buriedness
+6.2.2 Area
+Area entities represent buildings and roads.
+Properties
+• blockades: a list with the blockades in that area
+• edges: a list with the edges that limit the area
+• neighbours: a list of the areas that can be accessed from this area
+• X & Y: coordinates representing the area in the map
+While both buildings and roads have the blockades attribute, blockades appear only in roads.
+
+6.2.3 Buildings
+Properties
+• brokenness: how structurally damaged the building is; does not change during the simulation
+• fieryness: the intensity of the fire and fire-related damage in the building
+– UNBURNT (not burnt at all)
+– WATER DAMAGE (not burnt at all, but has water damage)
+– HEATING (on fire a bit)
+– BURNING (on fire a bit more)
+– INFERNO (on fire a lot)
+– MINOR DAMAGE (extinguished but minor damage)
+– MODERATE DAMAGE (extinguished but moderate damage)
+– SEVERE DAMAGE (extinguished but major damage)
+– BURNT OUT (completely burnt out)
+• floors: the number of floors the building has
+• ground area: the area of each floor
+• ignition: indicates if the simulator has lit this building on fire4
+• importance: (unknown function; has equal values to all buildings)
+• temperature: temperature of the building; if it crosses a certain threshold, the building catches on fire
+• total area: the total area of the building (floors X ground area)
+
+6.2.5 Humans
+These are the entities representing humans. In the simulator, they can be Civilians, Ambulance Teams, Fire
+Brigades or Police Forces. They are all represented by circles of different colors, and cannot move by themselves
+if they are dead or buried.
+• buriedness: how deep the human is buried
+• damage: how much HP the human loses per cycle; zeroes when a refuge is reached
+• direction: direction to where the human is moving (inferred); the Y-axis positive half is zero, and the
+value increases until 129599 (360*60*60 - 1) seconds anti-clockwise
+• HP: health points of the human; if it reaches 0, the human dies
+• position: ID of the entity where the human is; may be an area entity or a human entity (if it is inside
+an ambulance)
+• position history: a list of the entities the human has passed during the last cycle, in chronological
+order
+• stamina: not implemented; would decrease each time the agent took an action and would be partially
+replenished at the beginning of each cycle
+• travel distance: (unknown)
+• X & Y: coordinates representing the human in the map
+
+● Building
+○ fire
+○ refuge
+○ firestation
+○ ambulancecentre
+○ firestation
+○ gasstation
+● Road
+○ ambulanceteam
+○ policeforce
+○ firebrigade
+○ civilian
+○ hydrant
+무슨 정보가 에이전트로 주어지고, 에이전트가 무슨 정보를 주는지를 알아야 한다. 
+
+
+
+server: start-precompute: call startkernel class
+
+map : gml format that conver from JOSM-openstreet. 
+
+rescuecore2 : most files
+
+kernel class가 있고, startkernel class에서 KernelStartupOptions에서 만들어진 option에 따라 initialize 함 
+
+connectionManager를 통해 연결 및 관리. 
+
+registerAgentControlledEntity에서 agent로 entities와 startup list, agentConfig로 전달됨. 
+
+agent 로 가야하는 정보는 agentConfig로 저장되어 전해진다. 
+agent 타입에 따라 다른듯?
+
+처음 연결 시 
+agentConfig는 config에서 removeExceptRegex를 거진 후, 
+agentConfig.setIntValue(StandardConstants.FIRE_BRIGADE_COUNT_KEY, model.getEntitiesOfType(StandardEntityURN.FIRE_BRIGADE).size());
+        agentConfig.setIntValue(StandardConstants.FIRE_STATION_COUNT_KEY, model.getEntitiesOfType(StandardEntityURN.FIRE_STATION).size());
+        agentConfig.setIntValue(StandardConstants.AMBULANCE_TEAM_COUNT_KEY, model.getEntitiesOfType(StandardEntityURN.AMBULANCE_TEAM).size());
+        agentConfig.setIntValue(StandardConstants.AMBULANCE_CENTRE_COUNT_KEY, model.getEntitiesOfType(StandardEntityURN.AMBULANCE_CENTRE).size());
+        agentConfig.setIntValue(StandardConstants.POLICE_FORCE_COUNT_KEY, model.getEntitiesOfType(StandardEntityURN.POLICE_FORCE).size());
+        agentConfig.setIntValue(StandardConstants.POLICE_OFFICE_COUNT_KEY, model.getEntitiesOfType(StandardEntityURN.POLICE_OFFICE).size());
+를 통해 정보가 일부 인트값으로 변경된다. . 
+
+제거되고 남은 정보 : kernel connection-time, 및 기본 constant 들(호스트 정보 등)  
+		agents-thinktime, ignoreuntil, 
+		fire-maximum,refill_rate,hydrant_rate,extinguish_max-sum, max-distance,
+		comms(communicationManager정보)channels,type,meesage_size,max 등
+		clear_repair_rate
+		perception_hp,damage,max-distance
+		StandardConstants_fire_brige_count,fire_station,Ambulance_team_count,ambulance_center_count,Police_force_kount, police_office_count
+
+맵은 공유하는 듯>
+
+communicationModel class를 통해 통신. communication.process
+
+ControlledEntityInfo 에서 인포메이션을 저장. 
+커널에서 타임스템프를 하나하나 진행시키면서 서버들과 통신해서 정보를 교환함. 
+
+StandardAgentRegistrar class가 불려서 저장
+worldmodel class 형태의 world가 모든 component를 들고있는듯. StandardWorldModel class 형태로 변형되어 
+standardagentregister에 불려온다. civilization seed 도 여기서 정의되는듯. 
+
+
+rescuecore2.Constants에 고정값이 저장되어 있고, 그 중 
+Constants.KERNEL_PORT_NUMBER_KEY 가 포트 넘버
+
+각 정보는 config class 형태로 저장되고 관리됨. 
+
+
+kernel.timestep()가 행동
+// Work out what the agents can see and hear (using the commands from the previous timestep).
+// Wait for new commands
+ // Send commands to simulators and wait for updates
+ // Collate updates and broadcast to simulators
+ // Send perception, commands and updates to viewers
+visible 정보에 hear 정보가 더해지는 듯 (Get the messages the agent can hear)
+
+visible:
+	        case ROAD:
+                    case HYDRANT:
+                        addRoadProperties((Road)next, result);
+                    case BUILDING:
+                    case REFUGE:
+                    case GAS_STATION:
+                    case FIRE_STATION:
+                    case AMBULANCE_CENTRE:
+                    case POLICE_OFFICE:
+                    case CIVILIAN:
+                    case FIRE_BRIGADE:
+                    case AMBULANCE_TEAM:
+                    case POLICE_FORCE:
+
+
+
+uncontrolledEntities
+kernel.componentManager.waitForAllAgents();
+kernel.componentManager.waitForAllSimulators();
+kernel.componentManager.waitForAllViewers();
+
+private static ScoreFunction makeScoreFunction(Config config) {
+		String className = config.getValue(Constants.SCORE_FUNCTION_KEY);
+		ScoreFunction result = instantiate(className, ScoreFunction.class);
+		return new ScoreTable(result);
+	}
+
+
+
+agent action list:
+common : move, rest
+fire : refill water, extinguish target(fire)
+police : clear target
+ambulance : load, unload civilization, rescue human
+can send message each other
+
+message : differnce range if agent has radio or not.
+message of scout ??
+detect road, human, building, fire themsevles.
+
+message priority low, middle, high
+
+message
+		//informational message
+		messageClassList.add(MessageAmbulanceTeam.class);
+		messageClassList.add(MessageBuilding.class);
+		messageClassList.add(MessageCivilian.class);
+		messageClassList.add(MessageFireBrigade.class);
+		messageClassList.add(MessagePoliceForce.class);
+		messageClassList.add(MessageRoad.class);
+		//centralized message
+		messageClassList.add(CommandAmbulance.class);
+		messageClassList.add(CommandFire.class);
+		messageClassList.add(CommandPolice.class);
+		messageClassList.add(CommandScout.class);
+		messageClassList.add(MessageReport.class);

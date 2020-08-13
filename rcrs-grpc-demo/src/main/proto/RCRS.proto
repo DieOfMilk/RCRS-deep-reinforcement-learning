@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "adf.sample.tactics";
+option java_outer_classname = "RCRSProto";
+
+package simpleRCRS;
+
+message ActionType {
+    int32 actionType=1;
+    double x=2;
+    double y=3;
+}
+
+message Move {
+    double x=1;
+    double y=2;
+}
+
+message Check {
+    int32 check=1;
+}
+
+message EdgeProto {
+    int32 startX = 1;
+    int32 startY = 2;
+    int32 endX=3;
+    int32 endY=4;
+    int32 neighbour=5;
+}
+
+message AreaProto{
+    string uRN = 1;
+    int32 iD = 2;
+    int32 x = 3;
+    int32 y = 4;
+    repeated EdgeProto edges = 5;
+    repeated int32 blockades = 6;
+    repeated int32 apexList = 7;
+    repeated int32 neighbours = 8;
+    ///// below for buildings
+    int32 floors = 9;
+    bool ignition = 10;
+    int32 fieryness = 11;
+    int32 brokenness = 12;
+    int32 buildingCode = 13;
+    int32 buildingAttributes = 14;
+    int32 groundArea = 15;
+    int32 totalArea =16;
+    int32 temperature = 17;
+    int32 importance = 18;
+    bool isOnFire = 19;
+}
+
+message HumanProto{
+    string uRN = 1;
+    int32 iD = 2;
+    int32 x = 3;
+    int32 y = 4;
+    int32 positionID = 5;
+    repeated int32 positionHistory = 6;
+    int32 travelDistance = 7;
+    int32 buriedness = 8;
+    int32 damage = 9;
+    int32 hP = 10;
+    int32 stamina = 11;
+    int32 direction = 12;
+    int32 water = 13;
+}
+
+message BlockadeProto {
+    string uRN = 1;
+    int32 iD = 2;
+    int32 x = 3;
+    int32 y = 4;
+    int32 cost = 5;
+    int32 positionID = 6;
+    repeated int32 apexList = 7;
+}
+
+message ElseProto {
+    string uRN = 1;
+    int32 iD = 2;
+}
+
+message WorldInfoProto{
+    repeated AreaProto areas = 1;
+    repeated HumanProto humans = 2;
+    repeated BlockadeProto blockades = 3;
+    repeated ElseProto elses = 4;
+    int32 time = 5;
+}
+
+message AgentProto {
+    int32 AgentType = 1;
+    int32 AgentID = 2; 
+}
+
+service SimpleConnection {
+    rpc SetActionType (AgentProto) returns (ActionType){};
+    rpc SetMove (Check) returns (Move){};
+    rpc RunTimestep(WorldInfoProto) returns (ActionType){};
+}
+
+
+
+
+// option objc_class_prefix = "HLW";
+

@@ -1,0 +1,3 @@
+somepredicate(*args, **kwargs):
+            return True
+        time.sleep(period)

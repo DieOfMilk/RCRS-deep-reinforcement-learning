@@ -1,0 +1,24 @@
+dirname ./launch.sh
+[ RCRS ADF Version 2.3.0 (build 20200308103712) ]
+
+[START ] Connect to server (host:localhost, port:7000)
+[FINISH] Connect AmbulanceTeam (success:0)
+[FINISH] Connect AmbulanceCentre (success:0)
+[FINISH] Connect PoliceOffice (success:0)
+[FINISH] Connect FireBrigade (success:0)
+[FINISH] Connect FireStation (success:0)
+[FINISH] Done connecting to server (0 agent)
+dirname ./launch.sh
+[ RCRS ADF Version 2.3.0 (build 20200308103712) ]
+
+[START ] Connect to server (host:localhost, port:7000)
+[FINISH] Connect AmbulanceCentre (success:0)
+[FINISH] Connect FireStation (success:0)
+[FINISH] Connect PoliceOffice (success:0)
+[INFO  ] Connected - adf.agent.platoon.PlatoonAmbulance@797a500d (NON_PRECOMPUTE)
+[INFO  ] Connected - adf.agent.platoon.PlatoonFire@594d5d0e (NON_PRECOMPUTE)
+[SampleKMeans] Cluster : 1
+[SampleKMeans] Cluster : 1
+[FINISH] Connect FireBrigade (success:1)
+[FINISH] Connect AmbulanceTeam (success:1)
+[FINISH] Done connecting to server (2 agents)
