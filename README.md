@@ -1,1 +1,24 @@
 # RCRS-deep-reinforcement-learning
+This project is multi-agent deep reinforcement learning project on RCRS(robocup-rescue-simulator).
+Now, the reward of deep reinforcement learning is relatied to sum of fire level of map, thus model only learn how to control fire brigade agents. After change reward function, police force and ambulence team will be added.
+Now, the agent id and agent number are constant value. You need to change these value if you change the agent setting. Later, I will modify the codes to get these information automatically. 
+
+
+## 1. Prerequisites
+* Git
+* OpenJDK Java 11+
+* Python 3.5+
+* Openai Gym
+* Stable Baselines
+* Tensorflow 1.15 (Note: Stable baselines is not compatible with Tensorflow 2. If you want to use other deep learning models rather than stable baselines, you can use tensorflow 2)
+```
+sudo apt-get update && sudo apt-get install cmake libopenmpi-dev python3-dev zlib1g-dev
+python3 -m pip install scikit-build cmake gym stable_baselines tensorflow==1.15 
+```
+## 2. Compile
+First, you need to compile rcrs-server and rcrs-adf files. Open `rcrs-server` and compile
+```
+./gradlew clean
+./gradlew completeBuild
+```
+Then, open `
