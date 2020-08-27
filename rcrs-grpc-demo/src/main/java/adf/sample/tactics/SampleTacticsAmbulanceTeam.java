@@ -73,6 +73,9 @@ public class SampleTacticsAmbulanceTeam extends TacticsAmbulanceTeam
     private static Logger logger;
     private FileHandler handler;
 
+    private static int[] previousList = {123,0,0,456,0,0};
+    private int agentNo;
+
     @Override
     public void initialize(AgentInfo agentInfo, WorldInfo worldInfo, ScenarioInfo scenarioInfo, ModuleManager moduleManager, MessageManager messageManager, DevelopData developData)
     {
@@ -94,6 +97,7 @@ public class SampleTacticsAmbulanceTeam extends TacticsAmbulanceTeam
                 StandardEntityURN.FIRE_STATION,
                 StandardEntityURN.POLICE_OFFICE
         );
+        agentNo=6;
         // this.setgRPC(Integer.toString(config.getIntValue(Constants.GRPC_PORT_NUMBER_KEY)));
 
         this.messageTool = new MessageTool(scenarioInfo, developData);
@@ -134,7 +138,7 @@ public class SampleTacticsAmbulanceTeam extends TacticsAmbulanceTeam
 
     @Override
     public void setgRPC(String gRPCNo){
-        String user = "3";
+        String user = "10";
         // Access a service running on the local machine on port 50051
         String target = "localhost:" + gRPCNo;
         // String target = "localhost:50052";
@@ -208,50 +212,108 @@ public class SampleTacticsAmbulanceTeam extends TacticsAmbulanceTeam
             }
         } 
         // autonomous
-        int busy = 0;
-        EntityID target = this.humanDetector.calc().getTarget();
-        Action action = this.actionTransport.setTarget(target).calc().getAction();
+
+        EntityID previousTarget = null;
+        int previousAction = -1;
+        int previousLoc = -1;
+        for (int i=0;i<agentNo;i++) {
+            if (previousList[i] == agentID.getValue()) {
+                previousLoc = i;
+                previousTarget = new EntityID(previousList[i+1]);
+                previousAction = previousList[i+2];
+            }
+        }
+
+        int busy;
+        EntityID target;
+        Action action;
         AgentProto agentproto;
-        if(busy==0){
-            agentproto = AgentProto.newBuilder().setAgentType(3).setAgentID(agentID.getValue()).build();
+        ((ActionTransport)this.actionTransport).setTarget(previousTarget);
+        if(((ActionTransport)this.actionTransport).isBusy()){
+            busy = 1;
         }
         else{
-            agentproto = AgentProto.newBuilder().setAgentType(6).setAgentID(agentID.getValue()).build();
+            busy = 2;
         }
+        Check check;
+        BusyProto busyproto = BusyProto.newBuilder().setAgentID(agentID.getValue()).setBusy(busy).build();
+        try {
+            // System.out.println(busyproto.getAgentID());
+            check = this.blockingStub.askBusy(busyproto);
+            // System.out.println(check.getCheck());
+        } catch (StatusRuntimeException e) {
+            System.out.println("transport error");
+            System.out.println(e.getMessage());
+        }
+        agentproto = AgentProto.newBuilder().setAgentType(3).setAgentID(agentID.getValue()).build();
         ActionType actionType = null;
         try {
             actionType = this.blockingStub.setActionType(agentproto);
         } catch (StatusRuntimeException e) {
-        logger.warn("line 219");
         }
-        logger.info("line 221 "+ Integer.toString(actionType.getActionType()));
-        switch(actionType.getActionType()) {
-            case 1:
-                logger.info("Case move with target setting");
-                ((ActionTransport)this.actionTransport).setTarget(new EntityID((int)actionType.getX()));
-                action = ((ActionTransport)this.actionTransport).calc().getAction();
-                break;
-            case 2:
-                logger.info("Case move");
-                action = ((ActionTransport)this.actionTransport).calc().getAction();
-                break;
-            case 3:
-                logger.info("Case clear");
-                action = ((ActionTransport)this.actionTransport).myTrans().getAction();
-                break;
-            case 4:
-                logger.info("Case take a rest");
-                action = new ActionRest(); 
-                break;
-            default:
-                logger.info("Case default");
-                break;
+        if (busy==2){
+            switch(actionType.getActionType()) {
+                case 1:
+                    logger.info("Case move with target setting");
+                    previousTarget = new EntityID((int)actionType.getX());
+                    ((ActionTransport)this.actionTransport).setTarget(new EntityID((int)actionType.getX()));
+                    action = ((ActionTransport)this.actionTransport).mycalc().getAction();
+                    previousAction = 1;
+                    break;
+                case 2:
+                    logger.info("Case move");
+                    ((ActionTransport)this.actionTransport).setTarget(previousTarget);
+                    action = ((ActionTransport)this.actionTransport).mycalc().getAction();
+                    previousAction = 2;
+                    break;
+                case 3:
+                    logger.info("Case resque");
+                    action = ((ActionTransport)this.actionTransport).myTrans().getAction();
+                    previousAction = 3;
+                    break;
+                case 4:
+                    logger.info("Case take a rest");
+                    action = new ActionRest(); 
+                    previousAction = 4;
+                    break;
+                default:
+                    logger.info("Case default");
+                    action = new ActionRest();
+                    break;
+            }
+        }
+        else {
+            switch(previousAction) {
+                case 1:
+                    logger.info("Case move with busy");           
+                    ((ActionTransport)this.actionTransport).setTarget(previousTarget);
+                    action = ((ActionTransport)this.actionTransport).mycalc().getAction();
+                    break;
+                case 2:
+                    logger.info("Case move with busy");
+                    ((ActionTransport)this.actionTransport).setTarget(previousTarget);
+                    action = ((ActionTransport)this.actionTransport).mycalc().getAction();
+                    break;
+                case 3:
+                    logger.info("Case resque");
+                    action = ((ActionTransport)this.actionTransport).myTrans().getAction();
+                    break;
+                case 4:
+                    logger.info("Case take a rest");
+                    action = new ActionRest(); 
+                    break;
+                default:
+                    logger.info("Case default");
+                    action = new ActionRest();
+                    break;
+            }
         }
         if (action != null)
         {
             this.sendActionMessage(messageManager, agent, action);
             return action;
         }
+        System.out.println("Why there is no action result?");
         target = this.search.calc().getTarget();
         action = this.actionExtMove.setTarget(target).calc().getAction();
         if (action != null)
@@ -259,7 +321,6 @@ public class SampleTacticsAmbulanceTeam extends TacticsAmbulanceTeam
             this.sendActionMessage(messageManager, agent, action);
             return action;
         }
-
         messageManager.addMessage(
                 new MessageAmbulanceTeam(true, agent, MessageAmbulanceTeam.ACTION_REST, agent.getPosition())
         );
@@ -300,6 +361,8 @@ public class SampleTacticsAmbulanceTeam extends TacticsAmbulanceTeam
             actionIndex = MessageAmbulanceTeam.ACTION_REST;
             target = ambulance.getPosition();
         }
+        if (target == null)
+        {target = ambulance.getPosition();}
         if (actionIndex != -1)
         {
             messageManager.addMessage(new MessageAmbulanceTeam(true, ambulance, actionIndex, target));

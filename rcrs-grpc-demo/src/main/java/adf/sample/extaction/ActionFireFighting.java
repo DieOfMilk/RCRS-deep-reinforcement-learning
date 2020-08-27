@@ -200,23 +200,19 @@ public class ActionFireFighting extends ExtAction
 
     public ExtAction mycalc()
     {
+        if (this.target != null)
+            {System.out.println(this.target.getValue());}
+        else
+            {System.out.println("target is null");}
         this.result = null;
         FireBrigade agent = (FireBrigade) this.agentInfo.me();
 
-        if (this.needRest(agent))
-        {
-            this.result = this.calcRefugeAction(agent, this.pathPlanning, this.target, false);
-            if (this.result != null)
-            {
-                return this;
-            }
-        }
-
         if (this.target == null)
         {
+            this.result = new ActionRest();
             return this;
         }
-        this.result = this.calcExtinguish(agent, this.pathPlanning, this.target);
+        this.result = this.mycalcExtinguish(agent, this.pathPlanning, this.target);
         return this;
     }
 
@@ -263,6 +259,7 @@ public class ActionFireFighting extends ExtAction
 
     private Action calcExtinguish(FireBrigade agent, PathPlanning pathPlanning, EntityID target)
     {
+        System.out.println("start calcExtinguish");
         EntityID agentPosition = agent.getPosition();
         StandardEntity positionEntity = Objects.requireNonNull(this.worldInfo.getPosition(agent));
         if (StandardEntityURN.REFUGE == positionEntity.getStandardURN())
@@ -288,6 +285,32 @@ public class ActionFireFighting extends ExtAction
         {
             neighbourBuilding.sort(new DistanceSorter(this.worldInfo, agent));
             return new ActionExtinguish(neighbourBuilding.get(0).getID(), this.maxExtinguishPower);
+        }
+        return this.getMoveAction(pathPlanning, agentPosition, target);
+    }
+
+    private Action mycalcExtinguish(FireBrigade agent, PathPlanning pathPlanning, EntityID target)
+    {
+        System.out.println("start calcExtinguish");
+        EntityID agentPosition = agent.getPosition();
+        StandardEntity positionEntity = Objects.requireNonNull(this.worldInfo.getPosition(agent));
+
+        List<StandardEntity> neighbourBuilding = new ArrayList<>();
+        StandardEntity entity = this.worldInfo.getEntity(target);
+        if (entity instanceof Building)
+        {
+            if (this.worldInfo.getDistance(positionEntity, entity) < this.maxExtinguishDistance)
+            {
+                neighbourBuilding.add(entity);
+            }
+        }
+
+        if (neighbourBuilding.size() > 0)
+        {
+            neighbourBuilding.sort(new DistanceSorter(this.worldInfo, agent));
+            if (((Building)neighbourBuilding.get(0)).isOnFire()){
+                return new ActionExtinguish(neighbourBuilding.get(0).getID(), this.maxExtinguishPower);
+            }
         }
         return this.getMoveAction(pathPlanning, agentPosition, target);
     }
@@ -321,6 +344,18 @@ public class ActionFireFighting extends ExtAction
             return !(positionURN == REFUGE || positionURN == HYDRANT) || agent.getWater() < this.refillCompleted;
         }
         return agent.getWater() <= this.refillRequest;
+        
+    }
+
+    private boolean myneedRefill(FireBrigade agent, boolean refillFlag)
+    {
+        if (refillFlag)
+        {
+            StandardEntityURN positionURN = Objects.requireNonNull(this.worldInfo.getPosition(agent)).getStandardURN();
+            return !(positionURN == HYDRANT) || agent.getWater() < this.refillRequest;
+        }
+        // return agent.getWater() <= this.refillRequest;
+        return agent.getWater() <= this.refillCompleted;//
     }
 
     private boolean needRest(Human agent)
@@ -385,6 +420,7 @@ public class ActionFireFighting extends ExtAction
         StandardEntityURN positionURN = Objects.requireNonNull(this.worldInfo.getPosition(agent)).getStandardURN();
         if (positionURN == HYDRANT)
         {
+            this.refillFlag = this.myneedRefill(agent, this.refillFlag);
             return new ActionRefill();
         }
         Action action = this.calcHydrantAction(agent, pathPlanning, target);
@@ -401,12 +437,15 @@ public class ActionFireFighting extends ExtAction
                 double newHydrantDistance = pathPlanning.calc().getDistance();
                 if (currentDistance <= newHydrantDistance)
                 {
+                    this.refillFlag = this.myneedRefill(agent, this.refillFlag);
                     return new ActionRefill();
                 }
             }
+            this.refillFlag = this.myneedRefill(agent, this.refillFlag); 
             return action;
         }
-        return null;
+        System.out.println("there is no hydrant");
+        return new ActionRest();
     }
 
     private Action calcRefugeAction(Human human, PathPlanning pathPlanning, EntityID target, boolean isRefill)
@@ -502,12 +541,17 @@ public class ActionFireFighting extends ExtAction
 
     public boolean isBusy(){
         FireBrigade agent = (FireBrigade) this.agentInfo.me();
-        if (this.refillFlag || this.needRest(agent)) {
-            System.out.println("here1");
+        if (this.refillFlag) {
+            System.out.println("It's busy");
             return true;
         }
+        if(this.needRest(agent)){
+            System.out.println("It needs rest");
+            return true;
+        }
+
         if (this.target == null) {
-            System.out.println("here2");
+            System.out.println("It's not busy");
             return false;
         }
         
@@ -518,7 +562,7 @@ public class ActionFireFighting extends ExtAction
             Action action = this.getMoveAction(pathPlanning, agentPosition, this.target);
             if (action != null)
             {
-                System.out.println("here3");
+                System.out.println("start from refuge");
                 return true;
             }
         }
@@ -535,23 +579,24 @@ public class ActionFireFighting extends ExtAction
         if (neighbourBuilding.size() > 0)
         {
             neighbourBuilding.sort(new DistanceSorter(this.worldInfo, agent));
-            if(((Building)neighbourBuilding.get(0)).isOnFire() && agent.getWater()>1000) {
-                System.out.println("here5");
+            if(((Building)entity).isOnFire() && agent.getWater()>1000) {
+                System.out.println("Need to extinguish");
                 return true;
             }
             else {
-                System.out.println("here6");
+                System.out.println("It's finished to extinguish fire or No fire on " + String.valueOf(this.target.getValue()));
+                System.out.println(((Building)entity).isOnFire());
                 return false;
             }
             
         }
         Action action = this.getMoveAction(pathPlanning, agentPosition, this.target);
-        if (action != null && !(action instanceof ActionMove))
+        if (action != null && (action instanceof ActionMove))
         {
-            System.out.println("here7");
+            System.out.println("Need to move");
             return true;
         }
-        System.out.println("here8");
+        System.out.println("Nothing to do");
         return false;
     }
 

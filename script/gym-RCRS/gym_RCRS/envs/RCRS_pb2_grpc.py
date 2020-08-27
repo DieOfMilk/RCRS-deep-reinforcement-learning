@@ -28,6 +28,11 @@ class SimpleConnectionStub(object):
                 request_serializer=RCRS__pb2.WorldInfoProto.SerializeToString,
                 response_deserializer=RCRS__pb2.ActionType.FromString,
                 )
+        self.AskBusy = channel.unary_unary(
+                '/simpleRCRS.SimpleConnection/AskBusy',
+                request_serializer=RCRS__pb2.BusyProto.SerializeToString,
+                response_deserializer=RCRS__pb2.Check.FromString,
+                )
 
 
 class SimpleConnectionServicer(object):
@@ -51,6 +56,12 @@ class SimpleConnectionServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def AskBusy(self, request, context):
+        """Missing associated documentation comment in .proto file"""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_SimpleConnectionServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -68,6 +79,11 @@ def add_SimpleConnectionServicer_to_server(servicer, server):
                     servicer.RunTimestep,
                     request_deserializer=RCRS__pb2.WorldInfoProto.FromString,
                     response_serializer=RCRS__pb2.ActionType.SerializeToString,
+            ),
+            'AskBusy': grpc.unary_unary_rpc_method_handler(
+                    servicer.AskBusy,
+                    request_deserializer=RCRS__pb2.BusyProto.FromString,
+                    response_serializer=RCRS__pb2.Check.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -124,5 +140,21 @@ class SimpleConnection(object):
         return grpc.experimental.unary_unary(request, target, '/simpleRCRS.SimpleConnection/RunTimestep',
             RCRS__pb2.WorldInfoProto.SerializeToString,
             RCRS__pb2.ActionType.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def AskBusy(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/simpleRCRS.SimpleConnection/AskBusy',
+            RCRS__pb2.BusyProto.SerializeToString,
+            RCRS__pb2.Check.FromString,
             options, channel_credentials,
             call_credentials, compression, wait_for_ready, timeout, metadata)

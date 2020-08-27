@@ -136,7 +136,7 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
 
     @Override
     public void setgRPC(String gRPCNo){
-        String user = "3";
+        String user = "10";
         // Access a service running on the local machine on port 50051
         String target = "localhost:" + gRPCNo;
         // String target = "localhost:50052";
@@ -189,18 +189,9 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
         {
             WorldViewLauncher.getInstance().showTimeStep(agentInfo, worldInfo, scenarioInfo);
         }
-        EntityID previousTarget = null;
-        int previousAction = -1;
-        int previousLoc = -1;
         FireBrigade agent = (FireBrigade) agentInfo.me();
         EntityID agentID = agentInfo.getID();
-        for (int i=0;i<agentNo;i++) {
-            if (previousList[i] == agentID.getValue()) {
-                previousLoc = i;
-                previousTarget = new EntityID(previousList[i+1]);
-                previousAction = previousList[i+2];
-            }
-        }
+        
         // command
         for (CommunicationMessage message : messageManager.getReceivedMessageList(CommandScout.class))
         {
@@ -242,57 +233,72 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
             }
         }
         // autonomous
+        EntityID previousTarget = null;
+        int previousAction = -1;
+        int previousLoc = -1;
+        for (int i=0;i<agentNo;i++) {
+            if (previousList[i] == agentID.getValue()) {
+                previousLoc = i;
+                previousTarget = new EntityID(previousList[i+1]);
+                previousAction = previousList[i+2];
+            }
+        }
+        
         int busy;
-        EntityID target = this.buildingDetector.calc().getTarget();
-        Action action = ((ActionFireFighting)this.actionFireFighting.setTarget(target)).mycalc().getAction();
+        EntityID target;
+        Action action;
         AgentProto agentproto;
         ((ActionFireFighting)this.actionFireFighting).setTarget(previousTarget);
         if(((ActionFireFighting)this.actionFireFighting).isBusy()){
             busy = 1;
         }
         else{
-            busy = 0;
+            busy = 2;
         }
-        if(busy==0){
-            agentproto = AgentProto.newBuilder().setAgentType(2).setAgentID(agentID.getValue()).build();
+        Check check;
+        BusyProto busyproto = BusyProto.newBuilder().setAgentID(agentID.getValue()).setBusy(busy).build();
+        try {
+            // System.out.println(busyproto.getAgentID());
+            check = this.blockingStub.askBusy(busyproto);
+            // System.out.println(check.getCheck());
+        } catch (StatusRuntimeException e) {
+            System.out.println("line 261 busy ask error");
+            System.out.println(e.getMessage());
         }
-        else{
-            agentproto = AgentProto.newBuilder().setAgentType(5).setAgentID(agentID.getValue()).build();
-        }
+        agentproto = AgentProto.newBuilder().setAgentType(2).setAgentID(agentID.getValue()).build();
         ActionType actionType = null;
         try {
             actionType = this.blockingStub.setActionType(agentproto);
         } catch (StatusRuntimeException e) {
             logger.warn("line 210");
         }
-        
-        if (busy==0){
+        if (busy==2){
             switch(actionType.getActionType()) {
                 case 1:
-                    logger.info("Case move with target setting");
+                    System.out.println("Case move with target setting");
                     previousTarget = new EntityID((int)actionType.getX());
                     ((ActionFireFighting)this.actionFireFighting).setTarget(new EntityID((int)actionType.getX()));
                     action = ((ActionFireFighting)this.actionFireFighting).mycalc().getAction();
                     previousAction = 1;
                     break;
                 case 2:
-                    logger.info("Case move");
+                    System.out.println("Case move");
                     ((ActionFireFighting)this.actionFireFighting).setTarget(previousTarget);
                     action = ((ActionFireFighting)this.actionFireFighting).mycalc().getAction();
                     previousAction = 2;
                     break;
                 case 3:
-                    logger.info("Case water refill");
+                    System.out.println("Case water refill");
                     action = ((ActionFireFighting)this.actionFireFighting).callRefill().getAction();
                     previousAction = 3;
                     break;
                 case 4:
-                    logger.info("Case take a rest");
+                    System.out.println("Case take a rest");
                     action = new ActionRest(); 
                     previousAction = 4;
                     break;
                 default:
-                    logger.info("Case default");
+                    System.out.println("Case default");
                     action = new ActionRest();
                     break;
             }
@@ -302,25 +308,25 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
         else {
             switch(previousAction) {
                 case 1:
-                    logger.info("Case move");
+                    System.out.println("Case move with busy");
                     ((ActionFireFighting)this.actionFireFighting).setTarget(previousTarget);
                     action = ((ActionFireFighting)this.actionFireFighting).mycalc().getAction();
                     break;
                 case 2:
-                    logger.info("Case move");
+                    System.out.println("Case move with busy");
                     ((ActionFireFighting)this.actionFireFighting).setTarget(previousTarget);
                     action = ((ActionFireFighting)this.actionFireFighting).mycalc().getAction();
                     break;
                 case 3:
-                    logger.info("Case water refill");
+                    System.out.println("Case water refill with busy");
                     action = ((ActionFireFighting)this.actionFireFighting).callRefill().getAction();
                     break;
                 case 4:
-                    logger.info("Case take a rest");
+                    System.out.println("Case take a rest with busy");
                     action = new ActionRest(); 
                     break;
                 default:
-                    logger.info("Case default");
+                    System.out.println("Case default with busy");
                     action = new ActionRest();
                     break;
             }
@@ -330,13 +336,14 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
             this.sendActionMessage(messageManager, agent, action);
             return action;
         }
+        System.out.println("Why there is no action result?");
+        target = this.buildingDetector.calc().getTarget();
         action = this.actionExtMove.setTarget(target).calc().getAction();
         if (action != null)
         {
             this.sendActionMessage(messageManager, agent, action);
             return action;
         }
-
         messageManager.addMessage(
                 new MessageFireBrigade(true, agent, MessageFireBrigade.ACTION_REST,  agent.getPosition())
         );
@@ -372,9 +379,11 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
             actionIndex = MessageFireBrigade.ACTION_REST;
             target = agent.getPosition();
         }
-
+        if (target == null)
+        {target = agent.getPosition();}
         if (actionIndex != -1)
         {
+            // System.out.println(target.getValue());
             messageManager.addMessage(new MessageFireBrigade(true, agent, actionIndex, target));
         }
     }

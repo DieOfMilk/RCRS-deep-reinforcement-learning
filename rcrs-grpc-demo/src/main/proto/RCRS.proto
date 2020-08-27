@@ -96,10 +96,16 @@ message AgentProto {
     int32 AgentID = 2; 
 }
 
+message BusyProto {
+    int32 AgentID = 1;
+    int32 Busy = 2;
+}
+
 service SimpleConnection {
     rpc SetActionType (AgentProto) returns (ActionType){};
     rpc SetMove (Check) returns (Move){};
     rpc RunTimestep(WorldInfoProto) returns (ActionType){};
+    rpc AskBusy(BusyProto) returns (Check){};
 }
 
 

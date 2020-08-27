@@ -177,6 +177,67 @@ public class ActionTransport extends ExtAction
         return this;
     }
 
+    public ExtAction mycalc()
+    {
+        this.result = null;
+        AmbulanceTeam agent = (AmbulanceTeam) this.agentInfo.me();
+        Human transportHuman = this.agentInfo.someoneOnBoard();
+
+        if (transportHuman != null)
+        {
+            this.result = this.calcUnload(agent, this.pathPlanning, transportHuman, this.target);
+            if (this.result != null)
+            {
+                return this;
+            }
+        }
+        if (this.needRest(agent))
+        {
+            EntityID areaID = this.convertArea(this.target);
+            ArrayList<EntityID> targets = new ArrayList<>();
+            if (areaID != null)
+            {
+                targets.add(areaID);
+            }
+            this.result = this.calcRefugeAction(agent, this.pathPlanning, targets, false);
+            if (this.result != null)
+            {
+                return this;
+            }
+        }
+        if (this.target != null)
+        {
+            this.result = this.calcRescue(agent, this.pathPlanning, this.target);
+        }
+        return this;
+    }
+
+    public boolean isBusy() {
+        Human transportHuman = this.agentInfo.someoneOnBoard();
+        AmbulanceTeam agent = (AmbulanceTeam) this.agentInfo.me();
+        EntityID agentPosition = agent.getPosition();
+        if (transportHuman != null){
+            System.out.println("Some on board");
+            return true;
+        }
+        if( this.needRest(agent)){
+            System.out.println("He needs some rest");
+            return true;
+        }
+        if (this.target == null) {
+            System.out.println("It's not busy");
+            return false;
+        }
+        Action action = this.getMoveAction(pathPlanning, agentPosition, this.target);
+        if (action != null && (action instanceof ActionMove))
+        {
+            System.out.println("Need to move");
+            return true;
+        }
+        System.out.println("Nothing to do");
+        return false;
+    }
+
     public ExtAction myMove()
     {
         AmbulanceTeam agent = (AmbulanceTeam) this.agentInfo.me();
@@ -498,5 +559,24 @@ public class ActionTransport extends ExtAction
             }
         }
         return firstResult != null ? new ActionMove(firstResult) : null;
+    }
+    private Action getMoveAction(PathPlanning pathPlanning, EntityID from, EntityID target)
+    {
+        pathPlanning.setFrom(from);
+        pathPlanning.setDestination(target);
+        List<EntityID> path = pathPlanning.calc().getResult();
+        if (path != null && path.size() > 0)
+        {
+            StandardEntity entity = this.worldInfo.getEntity(path.get(path.size() - 1));
+            if (entity instanceof Building)
+            {
+                if (entity.getStandardURN() != StandardEntityURN.REFUGE)
+                {
+                    path.remove(path.size() - 1);
+                }
+            }
+            return new ActionMove(path);
+        }
+        return null;
     }
 }

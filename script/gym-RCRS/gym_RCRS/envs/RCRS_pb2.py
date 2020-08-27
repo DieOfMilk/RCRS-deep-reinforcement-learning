@@ -18,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='simpleRCRS',
   syntax='proto3',
   serialized_options=b'\n\022adf.sample.tacticsB\tRCRSProtoP\001',
-  serialized_pb=b'\n\nRCRS.proto\x12\nsimpleRCRS\"6\n\nActionType\x12\x12\n\nactionType\x18\x01 \x01(\x05\x12\t\n\x01x\x18\x02 \x01(\x01\x12\t\n\x01y\x18\x03 \x01(\x01\"\x1c\n\x04Move\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\"\x16\n\x05\x43heck\x12\r\n\x05\x63heck\x18\x01 \x01(\x05\"Z\n\tEdgeProto\x12\x0e\n\x06startX\x18\x01 \x01(\x05\x12\x0e\n\x06startY\x18\x02 \x01(\x05\x12\x0c\n\x04\x65ndX\x18\x03 \x01(\x05\x12\x0c\n\x04\x65ndY\x18\x04 \x01(\x05\x12\x11\n\tneighbour\x18\x05 \x01(\x05\"\xf6\x02\n\tAreaProto\x12\x0b\n\x03uRN\x18\x01 \x01(\t\x12\n\n\x02iD\x18\x02 \x01(\x05\x12\t\n\x01x\x18\x03 \x01(\x05\x12\t\n\x01y\x18\x04 \x01(\x05\x12$\n\x05\x65\x64ges\x18\x05 \x03(\x0b\x32\x15.simpleRCRS.EdgeProto\x12\x11\n\tblockades\x18\x06 \x03(\x05\x12\x10\n\x08\x61pexList\x18\x07 \x03(\x05\x12\x12\n\nneighbours\x18\x08 \x03(\x05\x12\x0e\n\x06\x66loors\x18\t \x01(\x05\x12\x10\n\x08ignition\x18\n \x01(\x08\x12\x11\n\tfieryness\x18\x0b \x01(\x05\x12\x12\n\nbrokenness\x18\x0c \x01(\x05\x12\x14\n\x0c\x62uildingCode\x18\r \x01(\x05\x12\x1a\n\x12\x62uildingAttributes\x18\x0e \x01(\x05\x12\x12\n\ngroundArea\x18\x0f \x01(\x05\x12\x11\n\ttotalArea\x18\x10 \x01(\x05\x12\x13\n\x0btemperature\x18\x11 \x01(\x05\x12\x12\n\nimportance\x18\x12 \x01(\x05\x12\x10\n\x08isOnFire\x18\x13 \x01(\x08\"\xe3\x01\n\nHumanProto\x12\x0b\n\x03uRN\x18\x01 \x01(\t\x12\n\n\x02iD\x18\x02 \x01(\x05\x12\t\n\x01x\x18\x03 \x01(\x05\x12\t\n\x01y\x18\x04 \x01(\x05\x12\x12\n\npositionID\x18\x05 \x01(\x05\x12\x17\n\x0fpositionHistory\x18\x06 \x03(\x05\x12\x16\n\x0etravelDistance\x18\x07 \x01(\x05\x12\x12\n\nburiedness\x18\x08 \x01(\x05\x12\x0e\n\x06\x64\x61mage\x18\t \x01(\x05\x12\n\n\x02hP\x18\n \x01(\x05\x12\x0f\n\x07stamina\x18\x0b \x01(\x05\x12\x11\n\tdirection\x18\x0c \x01(\x05\x12\r\n\x05water\x18\r \x01(\x05\"r\n\rBlockadeProto\x12\x0b\n\x03uRN\x18\x01 \x01(\t\x12\n\n\x02iD\x18\x02 \x01(\x05\x12\t\n\x01x\x18\x03 \x01(\x05\x12\t\n\x01y\x18\x04 \x01(\x05\x12\x0c\n\x04\x63ost\x18\x05 \x01(\x05\x12\x12\n\npositionID\x18\x06 \x01(\x05\x12\x10\n\x08\x61pexList\x18\x07 \x03(\x05\"$\n\tElseProto\x12\x0b\n\x03uRN\x18\x01 \x01(\t\x12\n\n\x02iD\x18\x02 \x01(\x05\"\xc0\x01\n\x0eWorldInfoProto\x12$\n\x05\x61reas\x18\x01 \x03(\x0b\x32\x15.simpleRCRS.AreaProto\x12&\n\x06humans\x18\x02 \x03(\x0b\x32\x16.simpleRCRS.HumanProto\x12,\n\tblockades\x18\x03 \x03(\x0b\x32\x19.simpleRCRS.BlockadeProto\x12$\n\x05\x65lses\x18\x04 \x03(\x0b\x32\x15.simpleRCRS.ElseProto\x12\x0c\n\x04time\x18\x05 \x01(\x05\"0\n\nAgentProto\x12\x11\n\tAgentType\x18\x01 \x01(\x05\x12\x0f\n\x07\x41gentID\x18\x02 \x01(\x05\x32\xcc\x01\n\x10SimpleConnection\x12\x41\n\rSetActionType\x12\x16.simpleRCRS.AgentProto\x1a\x16.simpleRCRS.ActionType\"\x00\x12\x30\n\x07SetMove\x12\x11.simpleRCRS.Check\x1a\x10.simpleRCRS.Move\"\x00\x12\x43\n\x0bRunTimestep\x12\x1a.simpleRCRS.WorldInfoProto\x1a\x16.simpleRCRS.ActionType\"\x00\x42!\n\x12\x61\x64\x66.sample.tacticsB\tRCRSProtoP\x01\x62\x06proto3'
+  serialized_pb=b'\n\nRCRS.proto\x12\nsimpleRCRS\"6\n\nActionType\x12\x12\n\nactionType\x18\x01 \x01(\x05\x12\t\n\x01x\x18\x02 \x01(\x01\x12\t\n\x01y\x18\x03 \x01(\x01\"\x1c\n\x04Move\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\"\x16\n\x05\x43heck\x12\r\n\x05\x63heck\x18\x01 \x01(\x05\"Z\n\tEdgeProto\x12\x0e\n\x06startX\x18\x01 \x01(\x05\x12\x0e\n\x06startY\x18\x02 \x01(\x05\x12\x0c\n\x04\x65ndX\x18\x03 \x01(\x05\x12\x0c\n\x04\x65ndY\x18\x04 \x01(\x05\x12\x11\n\tneighbour\x18\x05 \x01(\x05\"\xf6\x02\n\tAreaProto\x12\x0b\n\x03uRN\x18\x01 \x01(\t\x12\n\n\x02iD\x18\x02 \x01(\x05\x12\t\n\x01x\x18\x03 \x01(\x05\x12\t\n\x01y\x18\x04 \x01(\x05\x12$\n\x05\x65\x64ges\x18\x05 \x03(\x0b\x32\x15.simpleRCRS.EdgeProto\x12\x11\n\tblockades\x18\x06 \x03(\x05\x12\x10\n\x08\x61pexList\x18\x07 \x03(\x05\x12\x12\n\nneighbours\x18\x08 \x03(\x05\x12\x0e\n\x06\x66loors\x18\t \x01(\x05\x12\x10\n\x08ignition\x18\n \x01(\x08\x12\x11\n\tfieryness\x18\x0b \x01(\x05\x12\x12\n\nbrokenness\x18\x0c \x01(\x05\x12\x14\n\x0c\x62uildingCode\x18\r \x01(\x05\x12\x1a\n\x12\x62uildingAttributes\x18\x0e \x01(\x05\x12\x12\n\ngroundArea\x18\x0f \x01(\x05\x12\x11\n\ttotalArea\x18\x10 \x01(\x05\x12\x13\n\x0btemperature\x18\x11 \x01(\x05\x12\x12\n\nimportance\x18\x12 \x01(\x05\x12\x10\n\x08isOnFire\x18\x13 \x01(\x08\"\xe3\x01\n\nHumanProto\x12\x0b\n\x03uRN\x18\x01 \x01(\t\x12\n\n\x02iD\x18\x02 \x01(\x05\x12\t\n\x01x\x18\x03 \x01(\x05\x12\t\n\x01y\x18\x04 \x01(\x05\x12\x12\n\npositionID\x18\x05 \x01(\x05\x12\x17\n\x0fpositionHistory\x18\x06 \x03(\x05\x12\x16\n\x0etravelDistance\x18\x07 \x01(\x05\x12\x12\n\nburiedness\x18\x08 \x01(\x05\x12\x0e\n\x06\x64\x61mage\x18\t \x01(\x05\x12\n\n\x02hP\x18\n \x01(\x05\x12\x0f\n\x07stamina\x18\x0b \x01(\x05\x12\x11\n\tdirection\x18\x0c \x01(\x05\x12\r\n\x05water\x18\r \x01(\x05\"r\n\rBlockadeProto\x12\x0b\n\x03uRN\x18\x01 \x01(\t\x12\n\n\x02iD\x18\x02 \x01(\x05\x12\t\n\x01x\x18\x03 \x01(\x05\x12\t\n\x01y\x18\x04 \x01(\x05\x12\x0c\n\x04\x63ost\x18\x05 \x01(\x05\x12\x12\n\npositionID\x18\x06 \x01(\x05\x12\x10\n\x08\x61pexList\x18\x07 \x03(\x05\"$\n\tElseProto\x12\x0b\n\x03uRN\x18\x01 \x01(\t\x12\n\n\x02iD\x18\x02 \x01(\x05\"\xc0\x01\n\x0eWorldInfoProto\x12$\n\x05\x61reas\x18\x01 \x03(\x0b\x32\x15.simpleRCRS.AreaProto\x12&\n\x06humans\x18\x02 \x03(\x0b\x32\x16.simpleRCRS.HumanProto\x12,\n\tblockades\x18\x03 \x03(\x0b\x32\x19.simpleRCRS.BlockadeProto\x12$\n\x05\x65lses\x18\x04 \x03(\x0b\x32\x15.simpleRCRS.ElseProto\x12\x0c\n\x04time\x18\x05 \x01(\x05\"0\n\nAgentProto\x12\x11\n\tAgentType\x18\x01 \x01(\x05\x12\x0f\n\x07\x41gentID\x18\x02 \x01(\x05\"*\n\tBusyProto\x12\x0f\n\x07\x41gentID\x18\x01 \x01(\x05\x12\x0c\n\x04\x42usy\x18\x02 \x01(\x05\x32\x83\x02\n\x10SimpleConnection\x12\x41\n\rSetActionType\x12\x16.simpleRCRS.AgentProto\x1a\x16.simpleRCRS.ActionType\"\x00\x12\x30\n\x07SetMove\x12\x11.simpleRCRS.Check\x1a\x10.simpleRCRS.Move\"\x00\x12\x43\n\x0bRunTimestep\x12\x1a.simpleRCRS.WorldInfoProto\x1a\x16.simpleRCRS.ActionType\"\x00\x12\x35\n\x07\x41skBusy\x12\x15.simpleRCRS.BusyProto\x1a\x11.simpleRCRS.Check\"\x00\x42!\n\x12\x61\x64\x66.sample.tacticsB\tRCRSProtoP\x01\x62\x06proto3'
 )
 
 
@@ -676,6 +676,44 @@ _AGENTPROTO = _descriptor.Descriptor(
   serialized_end=1232,
 )
 
+
+_BUSYPROTO = _descriptor.Descriptor(
+  name='BusyProto',
+  full_name='simpleRCRS.BusyProto',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='AgentID', full_name='simpleRCRS.BusyProto.AgentID', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='Busy', full_name='simpleRCRS.BusyProto.Busy', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1234,
+  serialized_end=1276,
+)
+
 _AREAPROTO.fields_by_name['edges'].message_type = _EDGEPROTO
 _WORLDINFOPROTO.fields_by_name['areas'].message_type = _AREAPROTO
 _WORLDINFOPROTO.fields_by_name['humans'].message_type = _HUMANPROTO
@@ -691,6 +729,7 @@ DESCRIPTOR.message_types_by_name['BlockadeProto'] = _BLOCKADEPROTO
 DESCRIPTOR.message_types_by_name['ElseProto'] = _ELSEPROTO
 DESCRIPTOR.message_types_by_name['WorldInfoProto'] = _WORLDINFOPROTO
 DESCRIPTOR.message_types_by_name['AgentProto'] = _AGENTPROTO
+DESCRIPTOR.message_types_by_name['BusyProto'] = _BUSYPROTO
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 ActionType = _reflection.GeneratedProtocolMessageType('ActionType', (_message.Message,), {
@@ -763,6 +802,13 @@ AgentProto = _reflection.GeneratedProtocolMessageType('AgentProto', (_message.Me
   })
 _sym_db.RegisterMessage(AgentProto)
 
+BusyProto = _reflection.GeneratedProtocolMessageType('BusyProto', (_message.Message,), {
+  'DESCRIPTOR' : _BUSYPROTO,
+  '__module__' : 'RCRS_pb2'
+  # @@protoc_insertion_point(class_scope:simpleRCRS.BusyProto)
+  })
+_sym_db.RegisterMessage(BusyProto)
+
 
 DESCRIPTOR._options = None
 
@@ -772,8 +818,8 @@ _SIMPLECONNECTION = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=1235,
-  serialized_end=1439,
+  serialized_start=1279,
+  serialized_end=1538,
   methods=[
   _descriptor.MethodDescriptor(
     name='SetActionType',
@@ -800,6 +846,15 @@ _SIMPLECONNECTION = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_WORLDINFOPROTO,
     output_type=_ACTIONTYPE,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='AskBusy',
+    full_name='simpleRCRS.SimpleConnection.AskBusy',
+    index=3,
+    containing_service=None,
+    input_type=_BUSYPROTO,
+    output_type=_CHECK,
     serialized_options=None,
   ),
 ])
