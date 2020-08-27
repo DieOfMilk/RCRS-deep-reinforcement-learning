@@ -24,6 +24,7 @@ from tensorboard.backend.event_processing.event_accumulator import EventAccumula
 import pickle
 import shutil
 from stable_baselines.bench import Monitor
+from pathlib import Path
 
 class myPPO2(PPO2):
     def mylearn(self, save_path, total_timesteps, callback=None, log_interval=1, tb_log_name="PPO2", reset_num_timesteps=False):
@@ -130,7 +131,7 @@ class myPPO2(PPO2):
                     logger.dumpkvs()
                 self.save(save_path)
                 temp_data.append([true_reward])
-                temp_data_path = os.path.join(save_path,'data.pkl')
+                temp_data_path = os.path.join(Path(save_path).parent,'data.pkl')
                 with open(temp_data_path, 'wb') as f:
                     pickle.dump(temp_data,f)
 
