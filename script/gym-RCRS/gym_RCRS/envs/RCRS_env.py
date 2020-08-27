@@ -185,10 +185,10 @@ class RCRSEnv(gym.Env):
         return False
     def getReward(self):
         firenumber = 0
-        isonfire = np.array(self.obs[2:-3:3])
+        isonfire = np.array(self.obs[0:-8:3])
         for i in isonfire:
             firenumber +=i
-        self.reward = 370-firenumber
+        self.reward = 36-firenumber
         return self.reward
     def getObs(self):
         return self.obs
