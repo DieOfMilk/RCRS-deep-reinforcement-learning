@@ -96,6 +96,7 @@ There are three general inputs to run `modify_PPO2.py`.
 portNo ## the port number of RCRS. It is used to connect agents and RCRS server. 
 grpcNo ## the grpc port number. It is used to connect gym environment with RCRS server and agents.
 mapName ## any map name what you want. Automatically folder with the name is generated.  
+learningrate ## learning rate of model. Please input under 1.0 
 ```
 After choice the map name, automatically forder is generated in `script/log` directory. 
 In that directory, `data.pkl` and `model.zip` will be saved. `data.pkl` is training data and `model.zip` is saved model. 
