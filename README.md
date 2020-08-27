@@ -33,7 +33,7 @@ python3 -m pip install -e .
 ## 3. Structure
 ```
 .
-├── rcrs-grpc-demo   // RCRS agent part
+├── rcrs-grpc-demo            // RCRS agent part
 │   ├── build.gradle
 │   ├── clean.sh
 │   ├── compile.bat
@@ -56,7 +56,7 @@ python3 -m pip install -e .
             return Tru.txt
 │   ├── src
 │   └── WORKSPACE
-├── rcrs-server      // RCRS server part
+├── rcrs-server              // RCRS server part
 │   ├── boot
 │   ├── build.gradle
 │   ├── def waittest(driver, locator, attr, value):
@@ -79,9 +79,9 @@ python3 -m pip install -e .
 │   └── supplement
 ├── README.md
 └── script
-    ├── condor_scripts //simple condor examples
-    ├── gym-RCRS       // gym environment part
-    ├── log            // autometically the save folder will generate. 
+    ├── condor_scripts               //simple condor examples
+    ├── gym-RCRS                     // gym environment part
+    ├── log                          // autometically the save folder will generate. 
     └── modify_PPO2.py
 ```
 
@@ -104,12 +104,21 @@ If you want to see how simulator works, set `verbose=True` when you call env.
 ```
 env = gym.make("RCRS-v0", portNo=portNo, grpcNo=grpcNo, buildingNo=37, maxTimeStamp=98,mapName=mapName,verbose=True) (line 181)
 ```
+You can check the `data.pkl` through `script/graph.py` and see how model works through `script/load_PPO2.py`.
+
 
 ## 5. How to run on condor
 
 You can see the sample files at `script/condor_scripts/`. 
-However, you should change the `Executable` path of condor files. I suggest you to put the `.condor` files outside of `script` folder. 
-I assume you use anaconda envrionment to call. Then, you should change anaconda envrionment name on `script/condor_scripts/start.sh`
+```
+cpu_test.condor : condor script to run on cpu (If you want to remove gpu perfectly, use can add condition 'GPUs==0' or 'GPU == false'
+gpu_test.condor : condor script to run on GPU
+start.sh : bash script to call modify_PPO2.py. *If should be same directory with modify_PPO2.py*
+generate.py : simple script to generate input files for condor.
+```
+
+However, you should change the `Executable` path of condor files. I suggest you to put the `.condor` files outside of `script` folder. (eg, `parentDir/script` and `parentDir/~~.condor`
+I assume you will use anaconda envrionment to call virtual environment. Then, you should change anaconda envrionment name on `script/condor_scripts/start.sh`
 ```
 conda activate [name of envrionment]
 ```
