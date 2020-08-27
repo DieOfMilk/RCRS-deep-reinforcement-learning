@@ -30,18 +30,81 @@ Then, register RCRS environment as python package. Open `script/gym-RCRS` and co
 ```
 python3 -m pip install -e .
 ```
-## 3. How to run
+## 3. Structure
+```
+.
+├── rcrs-grpc-demo   // RCRS agent part
+│   ├── build.gradle
+│   ├── clean.sh
+│   ├── compile.bat
+│   ├── compile.sh
+│   ├── config
+│   ├── data
+│   ├── gradle
+│   ├── gradlew
+│   ├── gradlew.bat
+│   ├── kill.sh
+│   ├── kill_test.sh
+│   ├── launcher.sh
+│   ├── launch.sh
+│   ├── library
+│   ├── library2
+│   ├── LICENSE
+│   ├── output.txt
+│   ├── README.md
+│   ├── somepredicate(*args, **kwargs):
+            return Tru.txt
+│   ├── src
+│   └── WORKSPACE
+├── rcrs-server      // RCRS server part
+│   ├── boot
+│   ├── build.gradle
+│   ├── def waittest(driver, locator, attr, value):
+    element = driver.find_element_by_xpath(locator.txt
+│   ├── flow_RCRS.txt
+│   ├── gradle
+│   ├── gradlew
+│   ├── gradlew.bat
+│   ├── lib
+│   ├── LICENSE
+│   ├── log
+│   ├── maps
+│   ├── modules
+│   ├── oldsims
+│   ├── proto
+│   ├── README.md
+│   ├── scripts
+│   ├── settings.gradle
+│   ├── src
+│   └── supplement
+├── README.md
+└── script
+    ├── condor_scripts //simple condor examples
+    ├── gym-RCRS       // gym environment part
+    ├── log            // autometically the save folder will generate. 
+    └── modify_PPO2.py
+```
+
+## 4. How to run
 You should run your codes on `script` folder as root terminal. 
 You can test the codes with PPO model of stable baselines using `modify_PPO2.py`.
 ```
 python3 modify_PPO2.py
 ```
+There are three general inputs to run `modify_PPO2.py`.
+```
+portNo ## the port number of RCRS. It is used to connect agents and RCRS server. 
+grpcNo ## the grpc port number. It is used to connect gym environment with RCRS server and agents.
+mapName ## any map name what you want. Automatically folder with the name is generated.  
+```
+After choice the map name, automatically forder is generated in `script/log` directory. 
+In that directory, `data.pkl` and `model.zip` will be saved. `data.pkl` is training data and `model.zip` is saved model. 
 If you want to see how simulator works, set `verbose=True` when you call env.
 ```
 env = gym.make("RCRS-v0", portNo=portNo, grpcNo=grpcNo, buildingNo=37, maxTimeStamp=98,mapName=mapName,verbose=True) (line 181)
 ```
 
-## 4. How to run on condor
+## 5. How to run on condor
 
 You can see the sample files at `script/condor_scripts/`. 
 However, you should change the `Executable` path of condor files. I suggest you to put the `.condor` files outside of `script` folder. 
