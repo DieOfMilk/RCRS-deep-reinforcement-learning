@@ -178,7 +178,7 @@ if __name__=='__main__':
     grpcNo= input("grpc No")
     mapName = input("input map name")
     learning_rate = float(input("learning_rate"))
-    env = gym.make("RCRS-v0", portNo=portNo, grpcNo=grpcNo, buildingNo=37, maxTimeStamp=99,mapName=mapName, verbose=False)
+    env = gym.make("RCRS-v0", portNo=portNo, grpcNo=grpcNo, buildingNo=36, maxTimeStamp=99,mapName=mapName, verbose=False)
     # model =DQN('MlpPolicy', env, learning_rate=3e-4, prioritized_replay=True, verbose=0,tensorboard_log="./tmp/tensor/Env_test2")
     # env = Monitor(env, log_dir, allow_early_resets=True)
     temp = env
