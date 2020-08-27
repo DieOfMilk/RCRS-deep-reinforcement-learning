@@ -102,9 +102,11 @@ After choice the map name, automatically forder is generated in `script/log` dir
 In that directory, `data.pkl` and `model.zip` will be saved. `data.pkl` is training data and `model.zip` is saved model. 
 If you want to see how simulator works, set `verbose=True` when you call env.
 ```
-env = gym.make("RCRS-v0", portNo=portNo, grpcNo=grpcNo, buildingNo=37, maxTimeStamp=98,mapName=mapName,verbose=True) (line 181)
+env = gym.make("RCRS-v0", portNo=portNo, grpcNo=grpcNo, buildingNo=36, maxTimeStamp=99,mapName=mapName,verbose=True) (line 182)
 ```
 You can check the `data.pkl` through `script/graph.py` and see how model works through `script/load_PPO2.py`.
+`script/graph.py` will show sum of reward per one episode(99 steps) and `script/load_PPO2.py` will show model results 10 times.
+To use both, just input the `mapName` what you want to check. 
 
 
 ## 5. How to run on condor
