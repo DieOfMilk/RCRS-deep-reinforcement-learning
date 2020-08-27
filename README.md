@@ -34,48 +34,16 @@ python3 -m pip install -e .
 ```
 .
 ├── rcrs-grpc-demo            // RCRS agent part
-│   ├── build.gradle
-│   ├── clean.sh
-│   ├── compile.bat
-│   ├── compile.sh
-│   ├── config
-│   ├── data
-│   ├── gradle
-│   ├── gradlew
-│   ├── gradlew.bat
-│   ├── kill.sh
-│   ├── kill_test.sh
-│   ├── launcher.sh
-│   ├── launch.sh
-│   ├── library
-│   ├── library2
-│   ├── LICENSE
-│   ├── output.txt
-│   ├── README.md
-│   ├── somepredicate(*args, **kwargs):
-            return Tru.txt
-│   ├── src
+│   ├── build.gradle         // gradle setting to build RCRS agent
+│   ├── ... 
+│   ├── ...
+│   ├── src                  //source code
 │   └── WORKSPACE
 ├── rcrs-server              // RCRS server part
 │   ├── boot
-│   ├── build.gradle
-│   ├── def waittest(driver, locator, attr, value):
-    element = driver.find_element_by_xpath(locator.txt
-│   ├── flow_RCRS.txt
-│   ├── gradle
-│   ├── gradlew
-│   ├── gradlew.bat
-│   ├── lib
-│   ├── LICENSE
-│   ├── log
-│   ├── maps
-│   ├── modules
-│   ├── oldsims
-│   ├── proto
-│   ├── README.md
-│   ├── scripts
-│   ├── settings.gradle
-│   ├── src
+│   ├── build.gradle         // gradle setting to build RCRS server
+│   ├── ...
+│   ├── modules              // source code
 │   └── supplement
 ├── README.md
 └── script
