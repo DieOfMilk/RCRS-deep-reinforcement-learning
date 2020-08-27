@@ -352,7 +352,7 @@ public class ActionFireFighting extends ExtAction
         if (refillFlag)
         {
             StandardEntityURN positionURN = Objects.requireNonNull(this.worldInfo.getPosition(agent)).getStandardURN();
-            return !(positionURN == HYDRANT) || agent.getWater() < this.refillRequest;
+            return (positionURN == HYDRANT) && agent.getWater() < this.refillRequest;
         }
         // return agent.getWater() <= this.refillRequest;
         return agent.getWater() <= this.refillCompleted;//
