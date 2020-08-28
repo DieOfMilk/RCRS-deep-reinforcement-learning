@@ -116,4 +116,5 @@ Below is example sturucture on condor.
 ## warning
 * If you want to change some bash script, generate bash script, please set up `#!/bin/bash`, not `#!/bin/sh`. It may not works for RCRS.
 * When your codes failed on condor, please change port numbers. Sometimes, port number duplication was happended. 
-* If rcrs-server failed to launch before agent launched, it may failed to generate log files on `rcrs-server/log`.
+* Be sure that every nodes should use different map names with each others. If duplication happended, generated log files will be crashed and RCRS server will terminated. 
+
