@@ -98,5 +98,20 @@ Also, you should add below path as envrionment path on `~/.bashrc` becasue some 
 export PATH=/lusr/opt/condor/bin${PATH:+:${PATH}}$
 export PATH=/bin${PATH:+:${PATH}}$
 ```
+
+
+Below is example sturucture on condor.
+```
+./
+├── condor                                  // condor log, input output locations
+├── cpu_test.condor                         // condor files
+├── gpu_test.condor
+├── RCRS-deep-reinforcement-learning        //github files
+│   ├── rcrs-grpc-demo 
+│   ├── rcrs-server
+│   ├── README.md
+│   └── script                              //start.sh should be on ./RCRS-deep-reinforcement-learing/script/
+
+```
 ## warning
 If you want to change some bash script, generate bash script, please set up `#!/bin/bash`, not `#!/bin/sh`. It may not works for RCRS.
