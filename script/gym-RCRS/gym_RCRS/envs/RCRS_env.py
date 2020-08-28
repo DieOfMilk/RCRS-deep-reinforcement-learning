@@ -22,7 +22,7 @@ class RCRSEnv(gym.Env):
     def __init__(self, portNo, grpcNo, maxTimeStamp, buildingNo,mapName, verbose=False): # AreaList, agentList, algorithm,
         self.actionNo=4
         self.timeStamp=-1
-        self.total_step = 0
+        self.total_step = -1
         self.mapName=mapName
         # self.BuildingList = BuildingList
         self.verbose = verbose
@@ -50,15 +50,16 @@ class RCRSEnv(gym.Env):
         print("start step. Total step is : {}".format(self.total_step))
         self.run_action(action)
         self.done= False
+        self.connection.set_step_finished()
         self.wait_request(30,0.1)
         self.obs = self.connection.getObs(30,0.1)
         self.obs=np.append(self.obs,self.connection.getBusy(30,0.1))
         print(self.obs)
         self.reward = self.getReward()
+        print(self.reward)
         if self.timeStamp==self.maxTimeStamp:
             print("finished max time stamp")
             self.done=True
-            print("The final score is {}".format(self.reward))
         info = {}
         if not np.isin(1,self.obs[0:-8:3]): # about remaining fire
             info['is_success']=True   
@@ -119,6 +120,7 @@ class RCRSEnv(gym.Env):
             shell=False, cwd = "./../rcrs-server/boot")
         time.sleep(8)
         self.agent = subprocess.Popen("./launch.sh -all -s localhost:{} -r {}".format(self.portNo, self.grpcNo).split(),shell=False, cwd = "./../rcrs-grpc-demo") 
+        self.connection.set_step_finished()
         self.wait_request(30,0.1) ## wait until action request
         self.obs = self.connection.getObs(30,0.1)
         self.obs=np.append(self.obs,self.connection.getBusy(30,0.1))
@@ -158,6 +160,7 @@ class RCRSEnv(gym.Env):
         self.kernel = subprocess.Popen(["xterm","-e","./start.sh -l {} -m {} -c {} -p {} -r {}".format(logpath,mapfile,common_path,self.portNo,self.grpcNo)], shell=False, cwd = "./../rcrs-server/boot")
         time.sleep(8)
         self.agent = subprocess.Popen(["xterm","-e","./launch.sh -all -s localhost:{} -r {}".format(self.portNo, self.grpcNo)],shell=False, cwd = "./../rcrs-grpc-demo")
+        self.connection.set_step_finished()
         self.wait_request(30,0.1) ## wait until action request
         self.obs = self.connection.getObs(30,0.1)
         self.step(self.buildingNo)
@@ -208,11 +211,12 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
         self.locker = 0
         self.timestamp = -1
         self.obs = None
-        self.action = None
-        self.busy = [0,0]
-        self.busycheck = np.array([0,0])
+        self.action = [None] * len(agentList)
+        self.busy = [0]*len(agentList)
+        self.busycheck = np.array([0]*len(agentList))
         self.agentList = agentList
         self.buildingIdList = buildingIdList
+        self.stepfinished = False
     def AskBusy(self, request, context):
         # print("get something on here")
         # print(request)
@@ -244,6 +248,7 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
         for i in range(len(self.agentList)):
             if request.AgentID == self.agentList[i]:
                 templist = self.action[i].split(" ")
+                self.action[i] = None
                 break
         for i in range(len(self.agentList)):
             if self.agentList[i] == request.AgentID:
@@ -265,6 +270,7 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
                     return RCRS_pb2.ActionType(actionType= 4, x=float(x), y=float(y))
     def RunTimestep(self, request, context):
         ## should wait until previous timestep is finished
+        self.wait_step_finish(30,0.1)
         self.request = request
         self.timestamp = request.time
         obs=np.zeros(3*len(self.buildingIdList),dtype=np.int)
@@ -294,7 +300,6 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
                 # obs.append(self.busycheck)
         obs = np.append(obs,temp)
         self.obs = obs
-        self.action = None
         print("generate obs successfully")
         return RCRS_pb2.ActionType(actionType=0, x=float(0), y=float(0))
 
@@ -302,12 +307,12 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
         return self.timestamp
     def inputAction(self, action):
         self.action = action
-        print("input Action : {}".format(self.action))
         return True
     def wait_action(self,timeout, period):
         must_end = time.time() + timeout
         while time.time() < must_end:
-            if self.action:
+            if self.action != [None]*len(self.agentList):
+                print("action get successfully")
                 return True
             time.sleep(period)
         print("action get error")
@@ -337,3 +342,17 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
         print("busy get error")
         exit()
         return False
+    def wait_step_finish(self, timeout, period):
+        must_end = time.time() + timeout
+        while time.time() < must_end:
+            if self.stepfinished:
+                print("previous step finished")
+                self.stepfinished = False
+                return True
+            time.sleep(period)
+        print("previous step didn't finsihed")
+        exit()
+        return False
+    def set_step_finished(self):
+        self.stepfinished = True
+        return True

@@ -339,8 +339,7 @@ public class Kernel {
        @throws LogException If there is a problem writing the log.
     */
     public void timestep() throws InterruptedException, KernelException, LogException {
-        System.out.println("start timestep");
-        System.out.println("Now the timestep is"+time);
+        System.out.println("start timestep on kernel, now the timestep is"+time);
         try {
             Logger.pushLogContext(KERNEL_LOG_CONTEXT);
             synchronized (this) {
@@ -590,7 +589,7 @@ public class Kernel {
                     catch(Exception e) {
                         System.out.println("grpc error");
                         Logger.warn(e.getMessage());
-                        break;
+                        System.exit(1);
                     }
                 }
                 if (time == 0) {
@@ -651,6 +650,7 @@ public class Kernel {
         finally {
             Logger.popLogContext();
         }
+        System.out.println("one step finished");
     }
 
     /**
