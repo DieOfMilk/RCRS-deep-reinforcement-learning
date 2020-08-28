@@ -1,3 +1,4 @@
+#!/bin/bash
 DIR=`pwd`
 BASEDIR="`cd .. && pwd`"
 PIDS=$!
