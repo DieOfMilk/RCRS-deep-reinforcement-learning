@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd "./script"
+cd "./RCRS-deep-reinforcement-learning/script"
 echo $HOSTNAME
 source ~/.bashrc
 conda activate condor
