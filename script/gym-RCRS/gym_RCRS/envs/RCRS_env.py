@@ -178,7 +178,7 @@ class RCRSEnv(gym.Env):
     def wait_request(self, timeout, period):
         must_end = time.time() + timeout
         while time.time() < must_end:
-            if self.timeStamp != self.connection.getTimeStamp():
+            if self.timeStamp+1 == self.connection.getTimeStamp():
                 self.timeStamp = self.connection.getTimeStamp()
                 print("run time stamp with {}".format(self.timeStamp))
                 return True
@@ -270,7 +270,10 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
                     return RCRS_pb2.ActionType(actionType= 4, x=float(x), y=float(y))
     def RunTimestep(self, request, context):
         ## should wait until previous timestep is finished
-        self.wait_step_finish(30,0.1)
+        check = self.wait_step_finish(30,0.1)
+        if not check:
+            print("previous step error")
+            exit()
         self.request = request
         self.timestamp = request.time
         obs=np.zeros(3*len(self.buildingIdList),dtype=np.int)
