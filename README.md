@@ -34,48 +34,16 @@ python3 -m pip install -e .
 ```
 .
 ├── rcrs-grpc-demo            // RCRS agent part
-│   ├── build.gradle
-│   ├── clean.sh
-│   ├── compile.bat
-│   ├── compile.sh
-│   ├── config
-│   ├── data
-│   ├── gradle
-│   ├── gradlew
-│   ├── gradlew.bat
-│   ├── kill.sh
-│   ├── kill_test.sh
-│   ├── launcher.sh
-│   ├── launch.sh
-│   ├── library
-│   ├── library2
-│   ├── LICENSE
-│   ├── output.txt
-│   ├── README.md
-│   ├── somepredicate(*args, **kwargs):
-            return Tru.txt
-│   ├── src
+│   ├── build.gradle         // gradle setting to build RCRS agent
+│   ├── ... 
+│   ├── ...
+│   ├── src                  //source code
 │   └── WORKSPACE
 ├── rcrs-server              // RCRS server part
 │   ├── boot
-│   ├── build.gradle
-│   ├── def waittest(driver, locator, attr, value):
-    element = driver.find_element_by_xpath(locator.txt
-│   ├── flow_RCRS.txt
-│   ├── gradle
-│   ├── gradlew
-│   ├── gradlew.bat
-│   ├── lib
-│   ├── LICENSE
-│   ├── log
-│   ├── maps
-│   ├── modules
-│   ├── oldsims
-│   ├── proto
-│   ├── README.md
-│   ├── scripts
-│   ├── settings.gradle
-│   ├── src
+│   ├── build.gradle         // gradle setting to build RCRS server
+│   ├── ...
+│   ├── modules              // source code
 │   └── supplement
 ├── README.md
 └── script
@@ -102,9 +70,11 @@ After choice the map name, automatically forder is generated in `script/log` dir
 In that directory, `data.pkl` and `model.zip` will be saved. `data.pkl` is training data and `model.zip` is saved model. 
 If you want to see how simulator works, set `verbose=True` when you call env.
 ```
-env = gym.make("RCRS-v0", portNo=portNo, grpcNo=grpcNo, buildingNo=37, maxTimeStamp=98,mapName=mapName,verbose=True) (line 181)
+env = gym.make("RCRS-v0", portNo=portNo, grpcNo=grpcNo, buildingNo=36, maxTimeStamp=99,mapName=mapName,verbose=True) (line 182)
 ```
 You can check the `data.pkl` through `script/graph.py` and see how model works through `script/load_PPO2.py`.
+`script/graph.py` will show sum of reward per one episode(99 steps) and `script/load_PPO2.py` will show model results 10 times.
+To use both, just input the `mapName` what you want to check. 
 
 
 ## 5. How to run on condor
