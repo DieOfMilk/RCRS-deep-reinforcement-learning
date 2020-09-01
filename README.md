@@ -78,6 +78,10 @@ To use both, just input the `mapName` what you want to check.
 
 
 ## 5. How to run on condor
+You may need to use virtual environment to control your python envrionment in conor. Below is what should you do to use virtual envrionment in condor.
+* Install miniconda on your condor account.
+* Make your own virtual environment `conda create -n 'name what you want (ex: condor)`
+* call your virtual environment `conda activate 'name what you choose'` and install all python packages on that environment include gym-RCRS on `script/gym-RCRS`.
 
 You can see the sample files at `script/condor_scripts/`. 
 ```
@@ -88,9 +92,9 @@ generate.py : simple script to generate input files for condor.
 ```
 
 However, you should change the `Executable` path of condor files. I suggest you to put the `.condor` files outside of `script` folder. (eg, `parentDir/script` and `parentDir/~~.condor`
-I assume you will use anaconda envrionment to call virtual environment. Then, you should change anaconda envrionment name on `script/condor_scripts/start.sh`
+Additionally, we need to call virtual environment in bash scipt, thus you should change anaconda envrionment name on `script/condor_scripts/start.sh`
 ```
-conda activate [name of envrionment]
+conda activate [name of envrionment] (ex: conda activate condor)
 ```
 
 Also, you should add below path as envrionment path on `~/.bashrc` becasue some condor nodes can not find `bin` and `condor` setup.
