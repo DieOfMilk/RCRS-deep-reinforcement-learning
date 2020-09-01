@@ -59,6 +59,8 @@ class RCRSEnv(gym.Env):
         print(self.reward)
         if self.timeStamp==self.maxTimeStamp:
             print("finished max time stamp")
+            self.run_action([self.buildingNo,self.buildingNo])
+            self.connection.set_step_finished()
             self.done=True
         info = {}
         if not np.isin(1,self.obs[0:-8:3]): # about remaining fire
@@ -81,8 +83,12 @@ class RCRSEnv(gym.Env):
 
     def reset(self):
         print("start reset")
+        self.server = None
+        self.connection = None
         self.timeStamp = -1
+        time.sleep(3)
         self.server, self.connection  = self.serve(self.grpcNo)
+        
         logName = self.mapName
         
         origin_map_path = './../rcrs-server/maps/gml/EnvTest'
@@ -121,7 +127,7 @@ class RCRSEnv(gym.Env):
         time.sleep(16)
         self.connection.set_step_finished() 
         self.agent = subprocess.Popen("./launch.sh -all -s localhost:{} -r {}".format(self.portNo, self.grpcNo).split(),shell=False, cwd = "./../rcrs-grpc-demo")
-        for _ in range(15):
+        for _ in range(20):
             x = self.wait_request(30,0.1) ## wait until action request
             if x:
                 break
@@ -187,7 +193,7 @@ class RCRSEnv(gym.Env):
                 print("run time stamp with {}".format(self.timeStamp))
                 return True
             time.sleep(period)
-        print("No action request error")
+        print("No action request error with kernel {}, env {}".format(self.connection.getTimeStamp(), self.timeStamp))
         # exit()
         return False
     def getReward(self):
