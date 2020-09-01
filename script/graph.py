@@ -28,9 +28,9 @@ if __name__=='__main__':
     except:
         pass
     result = []
-    y = len(data)//99
+    y = len(data)//100
     for i in range(y):
-        result.append(np.sum(data[99*i:99*(i+1)]))
+        result.append(np.sum(data[100*i:100*(i+1)]))
     plt.plot(range(len(result)),result, label="{}".format(mapName))
     plt.legend(loc="upper right")
     plt.show()
