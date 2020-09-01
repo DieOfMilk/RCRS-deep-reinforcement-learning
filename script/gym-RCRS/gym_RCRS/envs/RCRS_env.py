@@ -118,10 +118,14 @@ class RCRSEnv(gym.Env):
         else:
             self.kernel = subprocess.Popen("./start.sh -l {} -m {} -c {} -p {} -r {} -g".format(logpath,mapfile,common_path,self.portNo,self.grpcNo).split(), 
             shell=False, cwd = "./../rcrs-server/boot")
-        time.sleep(8)
+        time.sleep(16)
         self.agent = subprocess.Popen("./launch.sh -all -s localhost:{} -r {}".format(self.portNo, self.grpcNo).split(),shell=False, cwd = "./../rcrs-grpc-demo") 
+        for _ in range(30):
+            x = self.wait_request(10,0.1) ## wait until action request
+            if x:
+                break
+            self.agent = subprocess.Popen("./launch.sh -all -s localhost:{} -r {}".format(self.portNo, self.grpcNo).split(),shell=False, cwd = "./../rcrs-grpc-demo") 
         self.connection.set_step_finished()
-        self.wait_request(30,0.1) ## wait until action request
         self.obs = self.connection.getObs(30,0.1)
         self.obs=np.append(self.obs,self.connection.getBusy(30,0.1))
         self.step([self.buildingNo,self.buildingNo])
@@ -184,7 +188,7 @@ class RCRSEnv(gym.Env):
                 return True
             time.sleep(period)
         print("No action request error")
-        exit()
+        # exit()
         return False
     def getReward(self):
         firenumber = 0
