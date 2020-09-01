@@ -121,7 +121,7 @@ class RCRSEnv(gym.Env):
         time.sleep(16)
         self.connection.set_step_finished() 
         self.agent = subprocess.Popen("./launch.sh -all -s localhost:{} -r {}".format(self.portNo, self.grpcNo).split(),shell=False, cwd = "./../rcrs-grpc-demo")
-        for _ in range(10):
+        for _ in range(15):
             x = self.wait_request(30,0.1) ## wait until action request
             if x:
                 break
