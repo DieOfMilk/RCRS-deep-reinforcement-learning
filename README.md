@@ -121,4 +121,5 @@ Below is example sturucture on condor.
 * If you want to change some bash script, generate bash script, please set up `#!/bin/bash`, not `#!/bin/sh`. It may not works for RCRS.
 * When your codes failed on condor, please change port numbers. Sometimes, port number duplication was happended. 
 * Be sure that every nodes should use different map names with each others. If duplication happended, generated log files will be crashed and RCRS server will terminated. 
+* Be careful that in this version, if the condor job is suspended over 5 mintues, it will terminate automatically even in the gpu test. Next version I will fix that limitation. 
 
