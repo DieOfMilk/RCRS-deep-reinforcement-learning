@@ -83,6 +83,7 @@ class RCRSEnv(gym.Env):
 
     def reset(self):
         print("start reset")
+        failed = 1
         self.server = None
         self.connection = None
         self.timeStamp = -1
@@ -127,11 +128,27 @@ class RCRSEnv(gym.Env):
         time.sleep(16)
         self.connection.set_step_finished() 
         self.agent = subprocess.Popen("./launch.sh -all -s localhost:{} -r {}".format(self.portNo, self.grpcNo).split(),shell=False, cwd = "./../rcrs-grpc-demo")
-        for _ in range(20):
-            x = self.wait_request(30,0.1) ## wait until action request
-            if x:
+        for _ in range(3):
+            for _ in range(15):
+                x = self.wait_request(30,0.1) ## wait until action request
+                if x:
+                    failed = 0
+                    break
+                self.agent.terminate()
+                self.agent.wait()
+                self.agent = subprocess.Popen("./launch.sh -all -s localhost:{} -r {}".format(self.portNo, self.grpcNo).split(),shell=False, cwd = "./../rcrs-grpc-demo")
+            if failed:
+                self.kernel.terminate()
+                self.kernel.wait()
+                if self.verbose:
+                    self.kernel = subprocess.Popen("./start.sh -l {} -m {} -c {} -p {} -r {}".format(logpath,mapfile,common_path,self.portNo,self.grpcNo).split(), 
+                    shell=False, cwd = "./../rcrs-server/boot")
+                else:
+                    self.kernel = subprocess.Popen("./start.sh -l {} -m {} -c {} -p {} -r {} -g".format(logpath,mapfile,common_path,self.portNo,self.grpcNo).split(), 
+                    shell=False, cwd = "./../rcrs-server/boot")
+                time.sleep(16)
+            else:
                 break
-            self.agent = subprocess.Popen("./launch.sh -all -s localhost:{} -r {}".format(self.portNo, self.grpcNo).split(),shell=False, cwd = "./../rcrs-grpc-demo") 
         self.obs = self.connection.getObs(300,0.1)
         self.obs=np.append(self.obs,self.connection.getBusy(300,0.1))
         self.step([self.buildingNo,self.buildingNo])
