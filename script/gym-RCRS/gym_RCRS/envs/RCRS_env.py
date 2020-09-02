@@ -244,10 +244,11 @@ class RCRSEnv(gym.Env):
                 elif i%3 == 2:
                     final_obs.append(obs[i]/5)
             else:
-                if i < len(obs) - 3*len(self.agentList):
-                    final_obs.append(obs[i]/self.maxWater)
-                elif i< len(obs)-len(self.agentList):
-                    final_obs.append((obs[i]-1000)/140000)
+                if i < len(obs) - len(self.agentList):
+                    if (i -(len(obs) - 4*len(self.agentList)))%3 ==0:
+                        final_obs.append(obs[i]/self.maxWater)
+                    else:
+                        final_obs.append((obs[i]-1000)/140000)
                 else:
                     final_obs.append(obs[i]-1)
         return final_obs
