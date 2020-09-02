@@ -158,7 +158,7 @@ class RCRSEnv(gym.Env):
         self.step([self.buildingNo,self.buildingNo])
         return self.obs
 
-    def render(self):condor
+    def render(self):
         self.timeStamp = -1
         logName = self.mapName
         
