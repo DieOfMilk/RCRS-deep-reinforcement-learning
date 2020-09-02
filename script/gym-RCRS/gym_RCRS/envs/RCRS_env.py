@@ -323,9 +323,9 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
                     return RCRS_pb2.ActionType(actionType= 4, x=float(x), y=float(y))
     def RunTimestep(self, request, context):
         ## should wait until previous timestep is finished
-        check = self.wait_step_finish(150,0.1)
-        if not check:
-            print("previous step error")
+        # check = self.wait_step_finish(150,0.1)
+        # if not check:
+            # print("previous step error")
         self.request = request
         self.timestamp = request.time
         obs=np.zeros(3*len(self.buildingIdList),dtype=np.int)
