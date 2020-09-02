@@ -257,21 +257,32 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
         }
         Check check;
         BusyProto busyproto = BusyProto.newBuilder().setAgentID(agentID.getValue()).setBusy(busy).build();
-        try {
-            // System.out.println(busyproto.getAgentID());
-            check = this.blockingStub.askBusy(busyproto);
-            // System.out.println(check.getCheck());
-        } catch (StatusRuntimeException e) {
-            System.out.println("line 261 busy ask error");
-            System.out.println(e.getMessage());
+        while(true){
+            try {
+                // System.out.println(busyproto.getAgentID());
+                check = this.blockingStub.withDeadlineAfter(60, TimeUnit.SECONDS).askBusy(busyproto);
+                if(check.getCheck()==1){
+                    break;
+                }
+                // System.out.println(check.getCheck());
+            } catch (StatusRuntimeException e) {
+                System.out.println("line 269 busy ask error");
+                System.out.println(e.getMessage());
+            }
         }
         agentproto = AgentProto.newBuilder().setAgentType(2).setAgentID(agentID.getValue()).build();
         ActionType actionType = null;
-        try {
-            actionType = this.blockingStub.setActionType(agentproto);
-        } catch (StatusRuntimeException e) {
-            logger.warn("line 210");
+        while(true){
+            try {
+                actionType = this.blockingStub.withDeadlineAfter(60, TimeUnit.SECONDS).setActionType(agentproto);
+                if (actionType.getActionType()>0) {
+                    break;
+                }
+            } catch (StatusRuntimeException e) {
+                System.out.println("line 282 setactiontype error");
+            }
         }
+        
         if (busy==2){
             switch(actionType.getActionType()) {
                 case 1:

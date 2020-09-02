@@ -33,7 +33,8 @@ class RCRSEnv(gym.Env):
         self.maxWater = 25000
         self.agentList = [1962675462,210552869]
         self.action_space = spaces.MultiDiscrete([self.buildingNo+2]*len(self.agentList))
-        self.observation_space = spaces.Box(low=np.array([0]*(buildingNo*3+len(self.agentList))+[-inf,-inf]*len(self.agentList)+[1]*len(self.agentList)).astype(int),high=np.array([inf]*(buildingNo*3)+[self.maxWater]*len(self.agentList)+[inf,inf]*len(self.agentList)+[2]*len(self.agentList)).astype(int),dtype= np.int) ## id, is on fire
+        # self.observation_space = spaces.Box(low=np.array([0]*(buildingNo*3+len(self.agentList))+[-inf,-inf]*len(self.agentList)+[1]*len(self.agentList)).astype(int),high=np.array([inf]*(buildingNo*3)+[self.maxWater]*len(self.agentList)+[inf,inf]*len(self.agentList)+[2]*len(self.agentList)).astype(int),dtype= np.int) ## id, is on fire
+        self.observation_space = spaces.Box(low=np.array([0]*(buildingNo*3+len(self.agentList))+[0,0]*len(self.agentList)+[0]*len(self.agentList)).astype(int),high=np.array([1]*(buildingNo*3)+[1]*len(self.agentList)+[1,1]*len(self.agentList)+[1]*len(self.agentList)).astype(int),dtype= np.int) ## id, is on fire
         self.obs= {}
         self.buildingIdList = [247, 248, 249, 250, 251, 253, 254, 255, 905, 934, 935, 936, 937, 938, 939, 940, 941, 942, 943, 
         944, 945, 946, 947, 948, 949, 950, 951, 952, 953, 954, 955, 956, 957, 958, 959, 960] # removed 298
@@ -67,7 +68,9 @@ class RCRSEnv(gym.Env):
             info['is_success']=True   
         else:
             info['is_success']=False
-        return self.obs, self.reward, self.done, info
+        final_obs = self.normalization(self.obs)
+        print(final_obs)
+        return final_obs, self.reward, self.done, info
     def run_action(self, action):
         action_list = []
         for i in action:
@@ -155,7 +158,7 @@ class RCRSEnv(gym.Env):
         self.step([self.buildingNo,self.buildingNo])
         return self.obs
 
-    def render(self):
+    def render(self):condor
         self.timeStamp = -1
         logName = self.mapName
         
@@ -230,6 +233,28 @@ class RCRSEnv(gym.Env):
         if self.agent:
             self.agent.terminate()
             self.kernel.wait()
+    def normalization(self, obs):
+        final_obs = []
+        for i in range(len(obs)):
+            if i< len(obs) - 4*len(self.agentList):
+                if i%3 == 0:
+                    final_obs.append(obs[i])
+                elif i%3 == 1:
+                    final_obs.append(obs[i]/1000)
+                elif i%3 == 2:
+                    final_obs.append(obs[i]/5)
+            else:
+                if i < len(obs) - 3*len(self.agentList):
+                    final_obs.append(obs[i]/self.maxWater)
+                elif i< len(obs)-len(self.agentList):
+                    final_obs.append((obs[i]-1000)/140000)
+                else:
+                    final_obs.append(obs[i]-1)
+        return final_obs
+            
+
+
+
 
 
 class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
@@ -297,10 +322,9 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
                     return RCRS_pb2.ActionType(actionType= 4, x=float(x), y=float(y))
     def RunTimestep(self, request, context):
         ## should wait until previous timestep is finished
-        check = self.wait_step_finish(300,0.1)
+        check = self.wait_step_finish(150,0.1)
         if not check:
             print("previous step error")
-            exit()
         self.request = request
         self.timestamp = request.time
         obs=np.zeros(3*len(self.buildingIdList),dtype=np.int)

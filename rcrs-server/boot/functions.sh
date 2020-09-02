@@ -1,4 +1,3 @@
-#!/bin/bash
 DIR=`pwd`
 BASEDIR="`cd .. && pwd`"
 PIDS=$!
@@ -190,7 +189,7 @@ function startKernel {
     echo "$CP"
     execute kernel "java -Xmx2048m -cp $CP -Dlog4j.log.dir=$LOGDIR kernel.StartKernel $KERNEL_OPTIONS"
     # Wait for the kernel to start
-    # waitFor $LOGDIR/kernel.log "Listening for connections"
+    waitFor $LOGDIR/kernel.log "Listening for connections"
 }
 
 # Start the simulators
@@ -247,6 +246,6 @@ function startViewer {
     # Execute the viewer
     execute viewer "java -Xmx512m -cp $CP:$BASEDIR/jars/rescuecore2.jar:$BASEDIR/jars/standard.jar:$BASEDIR/jars/sample.jar -Dlog4j.log.dir=$LOGDIR rescuecore2.LaunchComponents sample.SampleViewer -c $CONFIGDIR/viewer.cfg $TEAM_NAME_ARG $*"
 
-    # echo "waiting for viewer to connect..."
-    # waitFor $LOGDIR/viewer-out.log "success"
+    echo "waiting for viewer to connect..."
+    waitFor $LOGDIR/viewer-out.log "success"
 }

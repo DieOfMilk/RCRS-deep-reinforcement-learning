@@ -6,7 +6,7 @@ trap 'echo "killing..."; ./kill_test.sh; exit' INT
 processArgs $*
 
 # Delete old logs
-# rm -f $LOGDIR/*.log
+rm -f $LOGDIR/*.log
 sh kill_test.sh
 
 # startGIS --autorun --nomenu 

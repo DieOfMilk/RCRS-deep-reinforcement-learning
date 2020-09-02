@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.io.IOException;
 import java.io.File;
 
@@ -343,254 +344,255 @@ public class Kernel {
         try {
             Logger.pushLogContext(KERNEL_LOG_CONTEXT);
             synchronized (this) {
-                while(true) {
-                    try{
-                        //bilding -> Area, road-> Area, 
-                        Collection<? extends Entity> allEntity = this.worldModel.getAllEntities();
-                        WorldInfoProto worldInfoProto = WorldInfoProto.newBuilder().build();
-                        for( Entity entity : allEntity) {
-                            if(entity instanceof Area) {
-                                // System.out.println("Area start");
-                                AreaProto areaProto = AreaProto.newBuilder().build();
-                                if(entity instanceof Road) {
-                                    // System.out.println("Road start");
-                                    if(entity instanceof Hydrant){
-                                        // System.out.println("1");
-                                        areaProto = AreaProto.newBuilder(areaProto).setURN("Hydrant").build();
-                                    }
-                                    else{
-                                        // System.out.println("2");
-                                        // System.out.println(((Road)entity).getStandardURN().toString());
-                                        // System.out.println("2-2");
-                                        areaProto = AreaProto.newBuilder(areaProto).setURN("Road").build();
-                                    }
-                                    // System.out.println("Raod End");
+                try{
+                    //bilding -> Area, road-> Area, 
+                    Collection<? extends Entity> allEntity = this.worldModel.getAllEntities();
+                    WorldInfoProto worldInfoProto = WorldInfoProto.newBuilder().build();
+                    for( Entity entity : allEntity) {
+                        if(entity instanceof Area) {
+                            // System.out.println("Area start");
+                            AreaProto areaProto = AreaProto.newBuilder().build();
+                            if(entity instanceof Road) {
+                                // System.out.println("Road start");
+                                if(entity instanceof Hydrant){
+                                    // System.out.println("1");
+                                    areaProto = AreaProto.newBuilder(areaProto).setURN("Hydrant").build();
                                 }
-                                else if(entity instanceof Building) {
-                                    // System.out.println("building start");
-                                    if(entity instanceof AmbulanceCentre) {
-                                        // System.out.println("3");
-                                        areaProto = AreaProto.newBuilder(areaProto).setURN("AmbulanceCentre").build();
-                                    }
-                                    else if(entity instanceof FireStation) {
-                                        // System.out.println("4");
-                                        areaProto = AreaProto.newBuilder(areaProto).setURN("FireStation").build();
-                                    }
-                                    else if(entity instanceof PoliceOffice) {
-                                        // System.out.println("5");
-                                        areaProto = AreaProto.newBuilder(areaProto).setURN("PoliceOffice").build();
-                                    }
-                                    else if(entity instanceof GasStation) {
-                                        // System.out.println("6");
-                                        areaProto = AreaProto.newBuilder(areaProto).setURN("GasStation").build();
-                                    }
-                                    else if(entity instanceof Refuge) {
-                                        // System.out.println("7");
-                                        areaProto = AreaProto.newBuilder(areaProto).setURN("Refuge").build();
-                                    }
-                                    else{
-                                        // System.out.println("8");
-                                        areaProto = AreaProto.newBuilder(areaProto).setURN("Building").build();
-                                    }
-                                    // System.out.println("temp");
-                                    if(((Building)entity).isFloorsDefined()) {
-                                        areaProto = AreaProto.newBuilder(areaProto).setFloors(((Building)entity).getFloors()).build();//int
-                                    }
-                                    if(((Building)entity).isIgnitionDefined()){
-                                        areaProto = AreaProto.newBuilder(areaProto).setIgnition(((Building)entity).getIgnition()).build();//boolean
-                                    }
-                                    if(((Building)entity).isFierynessDefined()) {
-                                        areaProto = AreaProto.newBuilder(areaProto).setFieryness(((Building)entity).getFieryness()).build();//int
-                                    }
-                                    if(((Building)entity).isBrokennessDefined()) {
-                                        areaProto = AreaProto.newBuilder(areaProto).setBrokenness(((Building)entity).getBrokenness()).build();//int
-                                    }
-                                    if(((Building)entity).isBuildingCodeDefined()) {
-                                        areaProto = AreaProto.newBuilder(areaProto).setBuildingCode(((Building)entity).getBuildingCode()).build();//int
-                                    }
-                                    if(((Building)entity).isBuildingAttributesDefined()) {
-                                        areaProto = AreaProto.newBuilder(areaProto).setBuildingAttributes(((Building)entity).getBuildingAttributes()).build();//int
-                                    }
-                                    if(((Building)entity).isGroundAreaDefined()) {
-                                        areaProto = AreaProto.newBuilder(areaProto).setGroundArea(((Building)entity).getGroundArea()).build();//int
-                                    }
-                                    if(((Building)entity).isTotalAreaDefined()) {
-                                        areaProto = AreaProto.newBuilder(areaProto).setTotalArea(((Building)entity).getTotalArea()).build();//int
-                                    }
-                                    if(((Building)entity).isTemperatureDefined()) {
-                                        areaProto = AreaProto.newBuilder(areaProto).setTemperature(((Building)entity).getTemperature()).build();//int
-                                    }
-                                    if(((Building)entity).isImportanceDefined()) {
-                                        areaProto = AreaProto.newBuilder(areaProto).setImportance(((Building)entity).getImportance()).build();//int
-                                    }
-                                    areaProto = AreaProto.newBuilder(areaProto).setIsOnFire(((Building)entity).isOnFire()).build();//boolean
-                                    // System.out.println("building done");
+                                else{
+                                    // System.out.println("2");
+                                    // System.out.println(((Road)entity).getStandardURN().toString());
+                                    // System.out.println("2-2");
+                                    areaProto = AreaProto.newBuilder(areaProto).setURN("Road").build();
                                 }
-                                else {
-                                    areaProto = AreaProto.newBuilder(areaProto).setURN("Area").build();
-                                }
-                                if(((Area)entity).isXDefined()) {
-                                    // System.out.println("x");
-                                    areaProto = AreaProto.newBuilder(areaProto).setX(((Area)entity).getX()).build();//int
-                                }
-                                if(((Area)entity).isYDefined()) {
-                                    // System.out.println("y");
-                                    areaProto = AreaProto.newBuilder(areaProto).setY(((Area)entity).getY()).build();//int
-                                }
-                                if(((Area)entity).isEdgesDefined()) {
-                                    // System.out.println("edges");
-                                    List<Edge> edges = ((Area)entity).getEdges();//list<Edge>
-                                    for(Edge edge : edges) {
-                                        EdgeProto edgeProto =EdgeProto.newBuilder().build(); 
-                                        if(edge.getStartX() !=0){
-                                            edgeProto = EdgeProto.newBuilder(edgeProto).setStartX(edge.getStartX()).build();//int
-                                        }
-                                        if(edge.getStartY() !=0){
-                                            edgeProto = EdgeProto.newBuilder(edgeProto).setStartY(edge.getStartY()).build();//int
-                                        }
-                                        if(edge.getEndX() !=0){
-                                            edgeProto = EdgeProto.newBuilder(edgeProto).setEndX(edge.getEndX()).build();//int
-                                        }
-                                        if(edge.getEndY()!=0) {
-                                            edgeProto = EdgeProto.newBuilder(edgeProto).setEndY(edge.getEndY()).build();//int
-                                        }
-                                        if(edge.getNeighbour()!=null) {
-                                            edgeProto = EdgeProto.newBuilder(edgeProto).setNeighbour(edge.getNeighbour().getValue()).build();//int(ID)
-                                        }
-                                        areaProto = AreaProto.newBuilder(areaProto).addEdges(edgeProto).build();
-                                    }
-                                    // System.out.println("edges done");
-                                }
-                                // System.out.println("temp3");
-                                if(((Area)entity).isBlockadesDefined()) {
-                                    List<EntityID> blockades = ((Area)entity).getBlockades();//list{entityID} -> get int value using getValue()
-                                    for(EntityID blockade : blockades) {
-                                        areaProto = AreaProto.newBuilder(areaProto).addBlockades(blockade.getValue()).build();
-                                    }
-                                }
-                                // System.out.println("temp2");
-                                int[] apexList = ((Area)entity).getApexList();//int[]
-                                for(int apex : apexList) {
-                                    areaProto = AreaProto.newBuilder(areaProto).addApexList(apex).build();
-                                }
-                                List<EntityID> neighbours = ((Area)entity).getNeighbours();
-                                for(EntityID neighbour : neighbours) {
-                                    areaProto = AreaProto.newBuilder(areaProto).addNeighbours(neighbour.getValue()).build();
-                                }
-                                areaProto = AreaProto.newBuilder(areaProto).setID(entity.getID().getValue()).build();
-                                worldInfoProto = WorldInfoProto.newBuilder(worldInfoProto).addAreas(areaProto).build();
-                                // System.out.println("Area end");
+                                // System.out.println("Raod End");
                             }
-                            
-                            else if(entity instanceof Human) {
-                                // System.out.println("Human start");
-                                HumanProto humanProto = HumanProto.newBuilder().build();
-                                if(entity instanceof FireBrigade) {
-                                    humanProto = HumanProto.newBuilder(humanProto).setURN("FireBrigade").build();
-                                    if(((FireBrigade)entity).isWaterDefined()) {
-                                        humanProto = HumanProto.newBuilder(humanProto).setWater(((FireBrigade)entity).getWater()).build();//int
-                                    }
+                            else if(entity instanceof Building) {
+                                // System.out.println("building start");
+                                if(entity instanceof AmbulanceCentre) {
+                                    // System.out.println("3");
+                                    areaProto = AreaProto.newBuilder(areaProto).setURN("AmbulanceCentre").build();
                                 }
-                                else if(entity instanceof PoliceForce) {
-                                    humanProto = HumanProto.newBuilder(humanProto).setURN("PoliceForce").build();
+                                else if(entity instanceof FireStation) {
+                                    // System.out.println("4");
+                                    areaProto = AreaProto.newBuilder(areaProto).setURN("FireStation").build();
                                 }
-                                else if(entity instanceof AmbulanceTeam) {
-                                    humanProto = HumanProto.newBuilder(humanProto).setURN("AmbulanceTeam").build();
+                                else if(entity instanceof PoliceOffice) {
+                                    // System.out.println("5");
+                                    areaProto = AreaProto.newBuilder(areaProto).setURN("PoliceOffice").build();
                                 }
-                                else if(entity instanceof Civilian) {
-                                    humanProto = HumanProto.newBuilder(humanProto).setURN("Civilian").build();
+                                else if(entity instanceof GasStation) {
+                                    // System.out.println("6");
+                                    areaProto = AreaProto.newBuilder(areaProto).setURN("GasStation").build();
                                 }
-                                else {
-                                    humanProto = HumanProto.newBuilder(humanProto).setURN("Human").build();
+                                else if(entity instanceof Refuge) {
+                                    // System.out.println("7");
+                                    areaProto = AreaProto.newBuilder(areaProto).setURN("Refuge").build();
                                 }
-                                if(((Human)entity).isPositionDefined()){
-                                    humanProto = HumanProto.newBuilder(humanProto).setPositionID(((Human)entity).getPosition().getValue()).build();//position of entity ID
+                                else{
+                                    // System.out.println("8");
+                                    areaProto = AreaProto.newBuilder(areaProto).setURN("Building").build();
                                 }
-                                if(((Human)entity).isPositionHistoryDefined()) {
-                                    int[] positionHistory = ((Human)entity).getPositionHistory();//int[]
-                                    for(int position : positionHistory) {
-                                        humanProto = HumanProto.newBuilder(humanProto).addPositionHistory(position).build();
-                                    }
+                                // System.out.println("temp");
+                                if(((Building)entity).isFloorsDefined()) {
+                                    areaProto = AreaProto.newBuilder(areaProto).setFloors(((Building)entity).getFloors()).build();//int
                                 }
-                                if(((Human)entity).isTravelDistanceDefined()) {
-                                    humanProto = HumanProto.newBuilder(humanProto).setTravelDistance(((Human)entity).getTravelDistance()).build();//int
+                                if(((Building)entity).isIgnitionDefined()){
+                                    areaProto = AreaProto.newBuilder(areaProto).setIgnition(((Building)entity).getIgnition()).build();//boolean
                                 }
-                                if(((Human)entity).isXDefined()) {
-                                    humanProto = HumanProto.newBuilder(humanProto).setX(((Human)entity).getX()).build();//int
+                                if(((Building)entity).isFierynessDefined()) {
+                                    areaProto = AreaProto.newBuilder(areaProto).setFieryness(((Building)entity).getFieryness()).build();//int
                                 }
-                                if(((Human)entity).isYDefined()) {
-                                    humanProto = HumanProto.newBuilder(humanProto).setY(((Human)entity).getY()).build();//int
+                                if(((Building)entity).isBrokennessDefined()) {
+                                    areaProto = AreaProto.newBuilder(areaProto).setBrokenness(((Building)entity).getBrokenness()).build();//int
                                 }
-                                if(((Human)entity).isBuriednessDefined()) {
-                                    humanProto = HumanProto.newBuilder(humanProto).setBuriedness(((Human)entity).getBuriedness()).build();//int
+                                if(((Building)entity).isBuildingCodeDefined()) {
+                                    areaProto = AreaProto.newBuilder(areaProto).setBuildingCode(((Building)entity).getBuildingCode()).build();//int
                                 }
-                                if(((Human)entity).isDamageDefined()) {
-                                    humanProto = HumanProto.newBuilder(humanProto).setDamage(((Human)entity).getDamage()).build();//int
+                                if(((Building)entity).isBuildingAttributesDefined()) {
+                                    areaProto = AreaProto.newBuilder(areaProto).setBuildingAttributes(((Building)entity).getBuildingAttributes()).build();//int
                                 }
-                                if(((Human)entity).isHPDefined()) {
-                                    humanProto = HumanProto.newBuilder(humanProto).setHP(((Human)entity).getHP()).build();//int
+                                if(((Building)entity).isGroundAreaDefined()) {
+                                    areaProto = AreaProto.newBuilder(areaProto).setGroundArea(((Building)entity).getGroundArea()).build();//int
                                 }
-                                if(((Human)entity).isStaminaDefined()) {
-                                    humanProto = HumanProto.newBuilder(humanProto).setStamina(((Human)entity).getStamina()).build();//int
+                                if(((Building)entity).isTotalAreaDefined()) {
+                                    areaProto = AreaProto.newBuilder(areaProto).setTotalArea(((Building)entity).getTotalArea()).build();//int
                                 }
-                                if(((Human)entity).isDirectionDefined()){
-                                    humanProto = HumanProto.newBuilder(humanProto).setDirection(((Human)entity).getDirection()).build();//int
+                                if(((Building)entity).isTemperatureDefined()) {
+                                    areaProto = AreaProto.newBuilder(areaProto).setTemperature(((Building)entity).getTemperature()).build();//int
                                 }
-                                humanProto = HumanProto.newBuilder(humanProto).setID(entity.getID().getValue()).build();
-                                worldInfoProto = WorldInfoProto.newBuilder(worldInfoProto).addHumans(humanProto).build();
-                                // System.out.println("Human end");
+                                if(((Building)entity).isImportanceDefined()) {
+                                    areaProto = AreaProto.newBuilder(areaProto).setImportance(((Building)entity).getImportance()).build();//int
+                                }
+                                areaProto = AreaProto.newBuilder(areaProto).setIsOnFire(((Building)entity).isOnFire()).build();//boolean
+                                // System.out.println("building done");
                             }
-                            else if(entity instanceof Blockade) {
-                                // System.out.println("Blockade start");
-                                BlockadeProto blockadeproto = BlockadeProto.newBuilder().build();
-                                if(((Blockade)entity).isXDefined()) {
-                                    blockadeproto = BlockadeProto.newBuilder(blockadeproto).setX(((Blockade)entity).getX()).build();
-                                }
-                                if(((Blockade)entity).isYDefined()) {
-                                    blockadeproto = BlockadeProto.newBuilder(blockadeproto).setY(((Blockade)entity).getY()).build();
-                                }
-                                if(((Blockade)entity).isApexesDefined()) {
-                                    int[] apexList = ((Blockade)entity).getApexes();
-                                    for(int apex : apexList) {
-                                        blockadeproto = BlockadeProto.newBuilder(blockadeproto).addApexList(apex).build();
+                            else {
+                                areaProto = AreaProto.newBuilder(areaProto).setURN("Area").build();
+                            }
+                            if(((Area)entity).isXDefined()) {
+                                // System.out.println("x");
+                                areaProto = AreaProto.newBuilder(areaProto).setX(((Area)entity).getX()).build();//int
+                            }
+                            if(((Area)entity).isYDefined()) {
+                                // System.out.println("y");
+                                areaProto = AreaProto.newBuilder(areaProto).setY(((Area)entity).getY()).build();//int
+                            }
+                            if(((Area)entity).isEdgesDefined()) {
+                                // System.out.println("edges");
+                                List<Edge> edges = ((Area)entity).getEdges();//list<Edge>
+                                for(Edge edge : edges) {
+                                    EdgeProto edgeProto =EdgeProto.newBuilder().build(); 
+                                    if(edge.getStartX() !=0){
+                                        edgeProto = EdgeProto.newBuilder(edgeProto).setStartX(edge.getStartX()).build();//int
                                     }
+                                    if(edge.getStartY() !=0){
+                                        edgeProto = EdgeProto.newBuilder(edgeProto).setStartY(edge.getStartY()).build();//int
+                                    }
+                                    if(edge.getEndX() !=0){
+                                        edgeProto = EdgeProto.newBuilder(edgeProto).setEndX(edge.getEndX()).build();//int
+                                    }
+                                    if(edge.getEndY()!=0) {
+                                        edgeProto = EdgeProto.newBuilder(edgeProto).setEndY(edge.getEndY()).build();//int
+                                    }
+                                    if(edge.getNeighbour()!=null) {
+                                        edgeProto = EdgeProto.newBuilder(edgeProto).setNeighbour(edge.getNeighbour().getValue()).build();//int(ID)
+                                    }
+                                    areaProto = AreaProto.newBuilder(areaProto).addEdges(edgeProto).build();
                                 }
-                                if(((Blockade)entity).isPositionDefined()) {
-                                    blockadeproto = BlockadeProto.newBuilder(blockadeproto).setPositionID(((Blockade)entity).getPosition().getValue()).build();
-                                }
-                                if(((Blockade)entity).isRepairCostDefined()) {
-                                    blockadeproto = BlockadeProto.newBuilder(blockadeproto).setCost(((Blockade)entity).getRepairCost()).build();
-                                }
-                                blockadeproto = BlockadeProto.newBuilder(blockadeproto).setURN("Blockade").build();
-                                blockadeproto = BlockadeProto.newBuilder(blockadeproto).setID(entity.getID().getValue()).build();
-                                worldInfoProto = WorldInfoProto.newBuilder(worldInfoProto).addBlockades(blockadeproto).build();
-                                // System.out.println("Blockade end");
+                                // System.out.println("edges done");
                             }
-                            else{
-                                // System.out.println("Else start");
-                                ElseProto elseproto = ElseProto.newBuilder().build();
-                                elseproto = ElseProto.newBuilder(elseproto).setURN("Else").build();
-                                elseproto = ElseProto.newBuilder(elseproto).setID(entity.getID().getValue()).build();
-                                worldInfoProto = WorldInfoProto.newBuilder(worldInfoProto).addElses(elseproto).build();
-                                // System.out.println("Else end");
+                            // System.out.println("temp3");
+                            if(((Area)entity).isBlockadesDefined()) {
+                                List<EntityID> blockades = ((Area)entity).getBlockades();//list{entityID} -> get int value using getValue()
+                                for(EntityID blockade : blockades) {
+                                    areaProto = AreaProto.newBuilder(areaProto).addBlockades(blockade.getValue()).build();
+                                }
                             }
+                            // System.out.println("temp2");
+                            int[] apexList = ((Area)entity).getApexList();//int[]
+                            for(int apex : apexList) {
+                                areaProto = AreaProto.newBuilder(areaProto).addApexList(apex).build();
+                            }
+                            List<EntityID> neighbours = ((Area)entity).getNeighbours();
+                            for(EntityID neighbour : neighbours) {
+                                areaProto = AreaProto.newBuilder(areaProto).addNeighbours(neighbour.getValue()).build();
+                            }
+                            areaProto = AreaProto.newBuilder(areaProto).setID(entity.getID().getValue()).build();
+                            worldInfoProto = WorldInfoProto.newBuilder(worldInfoProto).addAreas(areaProto).build();
+                            // System.out.println("Area end");
                         }
-                        worldInfoProto = WorldInfoProto.newBuilder(worldInfoProto).setTime(time).build();
-                        // for (AgentProxy next : agents) {
-                        //     Entity tempAgent = next.getControlledEntity;
-                        // }
-                        // System.out.println("Generate worldproto successfully");
-                        ActionType actionType;
-                        actionType = blockingStub.runTimestep(worldInfoProto);
+                        
+                        else if(entity instanceof Human) {
+                            // System.out.println("Human start");
+                            HumanProto humanProto = HumanProto.newBuilder().build();
+                            if(entity instanceof FireBrigade) {
+                                humanProto = HumanProto.newBuilder(humanProto).setURN("FireBrigade").build();
+                                if(((FireBrigade)entity).isWaterDefined()) {
+                                    humanProto = HumanProto.newBuilder(humanProto).setWater(((FireBrigade)entity).getWater()).build();//int
+                                }
+                            }
+                            else if(entity instanceof PoliceForce) {
+                                humanProto = HumanProto.newBuilder(humanProto).setURN("PoliceForce").build();
+                            }
+                            else if(entity instanceof AmbulanceTeam) {
+                                humanProto = HumanProto.newBuilder(humanProto).setURN("AmbulanceTeam").build();
+                            }
+                            else if(entity instanceof Civilian) {
+                                humanProto = HumanProto.newBuilder(humanProto).setURN("Civilian").build();
+                            }
+                            else {
+                                humanProto = HumanProto.newBuilder(humanProto).setURN("Human").build();
+                            }
+                            if(((Human)entity).isPositionDefined()){
+                                humanProto = HumanProto.newBuilder(humanProto).setPositionID(((Human)entity).getPosition().getValue()).build();//position of entity ID
+                            }
+                            if(((Human)entity).isPositionHistoryDefined()) {
+                                int[] positionHistory = ((Human)entity).getPositionHistory();//int[]
+                                for(int position : positionHistory) {
+                                    humanProto = HumanProto.newBuilder(humanProto).addPositionHistory(position).build();
+                                }
+                            }
+                            if(((Human)entity).isTravelDistanceDefined()) {
+                                humanProto = HumanProto.newBuilder(humanProto).setTravelDistance(((Human)entity).getTravelDistance()).build();//int
+                            }
+                            if(((Human)entity).isXDefined()) {
+                                humanProto = HumanProto.newBuilder(humanProto).setX(((Human)entity).getX()).build();//int
+                            }
+                            if(((Human)entity).isYDefined()) {
+                                humanProto = HumanProto.newBuilder(humanProto).setY(((Human)entity).getY()).build();//int
+                            }
+                            if(((Human)entity).isBuriednessDefined()) {
+                                humanProto = HumanProto.newBuilder(humanProto).setBuriedness(((Human)entity).getBuriedness()).build();//int
+                            }
+                            if(((Human)entity).isDamageDefined()) {
+                                humanProto = HumanProto.newBuilder(humanProto).setDamage(((Human)entity).getDamage()).build();//int
+                            }
+                            if(((Human)entity).isHPDefined()) {
+                                humanProto = HumanProto.newBuilder(humanProto).setHP(((Human)entity).getHP()).build();//int
+                            }
+                            if(((Human)entity).isStaminaDefined()) {
+                                humanProto = HumanProto.newBuilder(humanProto).setStamina(((Human)entity).getStamina()).build();//int
+                            }
+                            if(((Human)entity).isDirectionDefined()){
+                                humanProto = HumanProto.newBuilder(humanProto).setDirection(((Human)entity).getDirection()).build();//int
+                            }
+                            humanProto = HumanProto.newBuilder(humanProto).setID(entity.getID().getValue()).build();
+                            worldInfoProto = WorldInfoProto.newBuilder(worldInfoProto).addHumans(humanProto).build();
+                            // System.out.println("Human end");
+                        }
+                        else if(entity instanceof Blockade) {
+                            // System.out.println("Blockade start");
+                            BlockadeProto blockadeproto = BlockadeProto.newBuilder().build();
+                            if(((Blockade)entity).isXDefined()) {
+                                blockadeproto = BlockadeProto.newBuilder(blockadeproto).setX(((Blockade)entity).getX()).build();
+                            }
+                            if(((Blockade)entity).isYDefined()) {
+                                blockadeproto = BlockadeProto.newBuilder(blockadeproto).setY(((Blockade)entity).getY()).build();
+                            }
+                            if(((Blockade)entity).isApexesDefined()) {
+                                int[] apexList = ((Blockade)entity).getApexes();
+                                for(int apex : apexList) {
+                                    blockadeproto = BlockadeProto.newBuilder(blockadeproto).addApexList(apex).build();
+                                }
+                            }
+                            if(((Blockade)entity).isPositionDefined()) {
+                                blockadeproto = BlockadeProto.newBuilder(blockadeproto).setPositionID(((Blockade)entity).getPosition().getValue()).build();
+                            }
+                            if(((Blockade)entity).isRepairCostDefined()) {
+                                blockadeproto = BlockadeProto.newBuilder(blockadeproto).setCost(((Blockade)entity).getRepairCost()).build();
+                            }
+                            blockadeproto = BlockadeProto.newBuilder(blockadeproto).setURN("Blockade").build();
+                            blockadeproto = BlockadeProto.newBuilder(blockadeproto).setID(entity.getID().getValue()).build();
+                            worldInfoProto = WorldInfoProto.newBuilder(worldInfoProto).addBlockades(blockadeproto).build();
+                            // System.out.println("Blockade end");
+                        }
+                        else{
+                            // System.out.println("Else start");
+                            ElseProto elseproto = ElseProto.newBuilder().build();
+                            elseproto = ElseProto.newBuilder(elseproto).setURN("Else").build();
+                            elseproto = ElseProto.newBuilder(elseproto).setID(entity.getID().getValue()).build();
+                            worldInfoProto = WorldInfoProto.newBuilder(worldInfoProto).addElses(elseproto).build();
+                            // System.out.println("Else end");
+                        }
+                    }
+                    worldInfoProto = WorldInfoProto.newBuilder(worldInfoProto).setTime(time).build();
+                    // for (AgentProxy next : agents) {
+                    //     Entity tempAgent = next.getControlledEntity;
+                    // }
+                    // System.out.println("Generate worldproto successfully");
+                    ActionType actionType;
+                    while(true){
+                        actionType = blockingStub.withDeadlineAfter(60, TimeUnit.SECONDS).runTimestep(worldInfoProto);
                         if (actionType.getActionType()==0) {
+                            System.out.println("send obs successfully");
                             break;
                         }
                     }
-                    catch(Exception e) {
-                        System.out.println("grpc error");
-                        Logger.warn(e.getMessage());
-                        System.exit(1);
-                    }
+                }
+                catch(Exception e) {
+                    System.out.println("grpc error");
+                    Logger.warn(e.getMessage());
+                    System.exit(1);
                 }
                 if (time == 0) {
                     fireStarted();
