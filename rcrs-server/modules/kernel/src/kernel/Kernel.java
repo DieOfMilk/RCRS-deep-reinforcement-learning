@@ -587,9 +587,9 @@ public class Kernel {
                             System.out.println("send obs successfully");
                             break;
                         }
-                        System.out.println("sending obs failed. Retry.")
-                        if(actiontype == null) {
-                            System.out.println("return failed")
+                        System.out.println("sending obs failed. Retry.");
+                        if(actionType == null) {
+                            System.out.println("return failed");
                         }
                     }
                 }
