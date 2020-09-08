@@ -179,6 +179,7 @@ if __name__=='__main__':
     grpcNo= input("grpc No")
     mapName = input("input map name")
     learning_rate = float(input("learning_rate"))
+    gamma = float(input("gamma"))
     env = gym.make("RCRS-v0", portNo=portNo, grpcNo=grpcNo, buildingNo=36, maxTimeStamp=100,mapName=mapName, verbose=False)
     # model =DQN('MlpPolicy', env, learning_rate=3e-4, prioritized_replay=True, verbose=0,tensorboard_log="./tmp/tensor/Env_test2")
     # env = Monitor(env, log_dir, allow_early_resets=True)
@@ -187,7 +188,7 @@ if __name__=='__main__':
     env = VecNormalize(env, norm_obs=True, norm_reward=False, clip_obs=10.)
     # 
     # ipdb.set_trace()
-    model = myPPO2(MlpPolicy, env, verbose=1, learning_rate=learning_rate)
+    model = myPPO2(MlpPolicy, env, verbose=1, learning_rate=learning_rate, gamma = gamma)
     save_path = os.path.join('./log',mapName)
     save_path = os.path.join(save_path,'model')
     if not os.path.exists(save_path):
