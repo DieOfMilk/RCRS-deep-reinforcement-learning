@@ -1,6 +1,6 @@
 #!/bin/bash
-trap 'echo "killing..."; ./kill_test.sh; exit' 15
-trap 'echo "killing..."; ./kill_test.sh; exit' INT
+trap 'echo "killing..."; kill -9 $PIDS; ./kill_test.sh; exit' 15
+trap 'echo "killing..."; kill -9 $PIDS; ./kill_test.sh; exit' INT
 . functions.sh
 
 processArgs $*

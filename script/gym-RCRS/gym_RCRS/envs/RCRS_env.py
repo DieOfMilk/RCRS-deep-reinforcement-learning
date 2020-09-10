@@ -14,6 +14,7 @@ import shutil
 import subprocess
 import signal
 from numpy import inf
+import gc
 
 
 
@@ -85,6 +86,7 @@ class RCRSEnv(gym.Env):
         self.connection.inputAction(action_list)
 
     def reset(self):
+        gc.collect()
         print("start reset")
         self.server = None
         self.connection = None
