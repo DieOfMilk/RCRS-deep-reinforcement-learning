@@ -34,7 +34,7 @@ class RCRSEnv(gym.Env):
         self.agentList = [1962675462,210552869]
         self.action_space = spaces.MultiDiscrete([self.buildingNo+2]*len(self.agentList))
         # self.observation_space = spaces.Box(low=np.array([0]*(buildingNo*3+len(self.agentList))+[-inf,-inf]*len(self.agentList)+[1]*len(self.agentList)).astype(int),high=np.array([inf]*(buildingNo*3)+[self.maxWater]*len(self.agentList)+[inf,inf]*len(self.agentList)+[2]*len(self.agentList)).astype(int),dtype= np.int) ## id, is on fire
-        self.observation_space = spaces.Box(low=np.array([0]*(buildingNo*3+len(self.agentList))+[0,0]*len(self.agentList)+[0]*len(self.agentList)).astype(int),high=np.array([1]*(buildingNo*3)+[1]*len(self.agentList)+[1,1]*len(self.agentList)+[1]*len(self.agentList)).astype(int),dtype= np.int) ## id, is on fire
+        self.observation_space = spaces.Box(low=np.array([0]*(buildingNo*1+len(self.agentList))+[0]*len(self.agentList)).astype(int),high=np.array([1]*(buildingNo*1)+[1]*len(self.agentList)+[1]*len(self.agentList)).astype(int),dtype= np.int) ## id, is on fire
         self.obs= {}
         self.buildingIdList = [247, 248, 249, 250, 251, 253, 254, 255, 905, 934, 935, 936, 937, 938, 939, 940, 941, 942, 943, 
         944, 945, 946, 947, 948, 949, 950, 951, 952, 953, 954, 955, 956, 957, 958, 959, 960] # removed 298
@@ -222,19 +222,11 @@ class RCRSEnv(gym.Env):
     def normalization(self, obs):
         final_obs = []
         for i in range(len(obs)):
-            if i< len(obs) - 4*len(self.agentList):
-                if i%3 == 0:
-                    final_obs.append(obs[i])
-                elif i%3 == 1:
-                    final_obs.append(obs[i]/1000)
-                elif i%3 == 2:
-                    final_obs.append(obs[i]/5)
+            if i< len(obs) - 2*len(self.agentList):
+                final_obs.append(obs[i])
             else:
                 if i < len(obs) - len(self.agentList):
-                    if (i -(len(obs) - 4*len(self.agentList)))%3 ==0:
-                        final_obs.append(obs[i]/self.maxWater)
-                    else:
-                        final_obs.append((obs[i]-1000)/140000)
+                    final_obs.append(obs[i]/self.maxWater)
                 else:
                     final_obs.append(obs[i]-1)
         return final_obs
@@ -324,16 +316,12 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
                             obs[3*j]=1
                         else:
                             obs[3*j]=0
-                        obs[3*j+1]=i.temperature
-                        obs[3*j+2]=i.fieryness
                         break
         for i in request.humans:
             if i.uRN=="FireBrigade":
                 for j in range(len(self.agentList)):
                     if i.iD == self.agentList[j]:
                         temp[j*3]=i.water
-                        temp[j*3+1]=i.x
-                        temp[j*3+2]=i.y
                         break
                 # for j in range(len(self.agentList)):
                 #     if self.agentList[j] == i.iD:
