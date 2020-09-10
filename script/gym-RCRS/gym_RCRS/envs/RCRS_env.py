@@ -204,7 +204,7 @@ class RCRSEnv(gym.Env):
         return False
     def getReward(self):
         firenumber = 0
-        isonfire = np.array(self.obs[0:-8:3])
+        isonfire = np.array(self.obs[0:-4])
         for i in isonfire:
             firenumber +=i
         self.reward = 36-firenumber
@@ -306,22 +306,22 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
             # print("previous step error")
         self.request = request
         self.timestamp = request.time
-        obs=np.zeros(3*len(self.buildingIdList),dtype=np.int)
-        temp = np.zeros(3*len(self.agentList),dtype=np.int)
+        obs=np.zeros(1*len(self.buildingIdList),dtype=np.int)
+        temp = np.zeros(1*len(self.agentList),dtype=np.int)
         for i in request.areas:
             if i.uRN=="Building" or i.uRN=="AmbulanceCentre" or i.uRN=="FireStation" or i.uRN=="PoliceOffice" or i.uRN=="GasStation" or i.uRN=="Refuge":
                 for j in range(len(self.buildingIdList)):
                     if i.iD == self.buildingIdList[j]:
                         if i.isOnFire:
-                            obs[3*j]=1
+                            obs[1*j]=1
                         else:
-                            obs[3*j]=0
+                            obs[1*j]=0
                         break
         for i in request.humans:
             if i.uRN=="FireBrigade":
                 for j in range(len(self.agentList)):
                     if i.iD == self.agentList[j]:
-                        temp[j*3]=i.water
+                        temp[j*1]=i.water
                         break
                 # for j in range(len(self.agentList)):
                 #     if self.agentList[j] == i.iD:
