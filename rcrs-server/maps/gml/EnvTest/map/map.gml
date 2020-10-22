@@ -4129,7 +4129,7 @@
       <gml:Face rcr:floors="1" rcr:buildingcode="0" rcr:importance="1">
         <gml:directedEdge orientation="+" xlink:href="#185"/>
         <gml:directedEdge orientation="+" xlink:href="#127"/>
-        <gml:directedEdge orientation="+" xlink:href="#128" rcr:neighbour="976"/>
+        <gml:directedEdge orientation="+" xlink:href="#128"/>
         <gml:directedEdge orientation="+" xlink:href="#229" rcr:neighbour="274"/>
         <gml:directedEdge orientation="+" xlink:href="#232"/>
         <gml:directedEdge orientation="+" xlink:href="#178"/>
@@ -4683,7 +4683,7 @@
         <gml:directedEdge orientation="-" xlink:href="#973" rcr:neighbour="975"/>
         <gml:directedEdge orientation="+" xlink:href="#228"/>
         <gml:directedEdge orientation="-" xlink:href="#104"/>
-        <gml:directedEdge orientation="+" xlink:href="#128" rcr:neighbour="255"/>
+        <gml:directedEdge orientation="+" xlink:href="#128"/>
         <gml:directedEdge orientation="+" xlink:href="#230" rcr:neighbour="274"/>
         <gml:directedEdge orientation="-" xlink:href="#800"/>
         <gml:directedEdge orientation="-" xlink:href="#799" rcr:neighbour="929"/>
