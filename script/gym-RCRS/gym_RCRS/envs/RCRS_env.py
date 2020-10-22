@@ -48,6 +48,7 @@ class RCRSEnv(gym.Env):
         self.action = [None,None]
         self.prevObs = None
         self.closed = False
+        self.server = None
         
 
     def step(self):
@@ -152,8 +153,9 @@ class RCRSEnv(gym.Env):
         self.idNumber=3
         gc.collect()
         print("start reset")
-        self.server.stop(0)
-        self.connection.setClose()
+        if self.server:
+            self.server.stop(0)
+            self.connection.setClose()
         self.server = None
         self.connection = None
         self.timeStamp = -1
@@ -535,7 +537,7 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
             return False
     def wait_step_finish(self, timeout, period):
         must_end = time.time() + timeout
-        while time.time() < must_end not self.closed:
+        while time.time() < must_end and not self.closed:
             if self.stepfinished:
                 print("previous step finished")
                 self.stepfinished = False

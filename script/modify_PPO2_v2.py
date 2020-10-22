@@ -3,7 +3,7 @@ import numpy as np
 import random
 import math
 import os
-import gym_RCRS2
+import gym_RCRS
 import time
 import gym
 from models.myPPO2 import myPPO2 
@@ -43,7 +43,7 @@ if __name__=='__main__':
     gamma = float(input("gamma"))
     save_path = os.path.join('./log',mapName)
     save_path = os.path.join(save_path,'model')
-    env = gym.make("RCRS2-v0", portNo=portNo, grpcNo=grpcNo, buildingNo=57, maxTimeStamp=35,mapName=mapName, verbose=False)
+    env = gym.make("RCRS-v0", portNo=portNo, grpcNo=grpcNo, buildingNo=57, maxTimeStamp=35,mapName=mapName, verbose=False)
     # model =DQN('MlpPolicy', env, learning_rate=3e-4, prioritized_replay=True, verbose=0,tensorboard_log="./tmp/tensor/Env_test2")
     # env = Monitor(env, log_dir, allow_early_resets=True)
     temp = env
