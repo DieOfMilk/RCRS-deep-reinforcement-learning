@@ -153,6 +153,12 @@ class RCRSEnv(gym.Env):
         self.idNumber=3
         gc.collect()
         print("start reset")
+        if self.kernel:
+            self.kernel.terminate()
+            self.kernel.wait()
+        if self.agent:
+            self.agent.terminate()
+            self.agent.wait()
         if self.server:
             self.server.stop(0)
             self.connection.setClose()
@@ -170,12 +176,6 @@ class RCRSEnv(gym.Env):
             shutil.copytree(origin_map_path, map_path)
         except:
             pass
-        if self.kernel:
-            self.kernel.terminate()
-            self.kernel.wait()
-        if self.agent:
-            self.agent.terminate()
-            self.agent.wait()
         commonCfg = []
         common_path = os.path.join(map_path, 'config/common.cfg')
         with open(common_path, 'r') as f:
@@ -339,7 +339,8 @@ class RCRSEnv(gym.Env):
         if self.agent:
             self.agent.terminate()
             self.agent.wait()
-        del self.connection
+        self.server.stop(0)
+        self.connection.setClose()
         self.connection = None
     def normalization(self, obs):
         final_obs = []
