@@ -1,6 +1,6 @@
 Universe = vanilla
 Executable = /u/milk/bin/RCRS-deep-reinforcement-learning/script/start.sh
-requirements = (has_avx2 == true || has_avx == true)
+requirements = (has_avx2 == true || has_avx == true) && TARGET.UidDomain == "cs.utexas.edu" && TARGET.FileSystemDomain == "cs.utexas.edu"
 +ProjectDescription = "Learn how to use condor"
 +Project = "OTHER"
 +Group = "GRAD"
