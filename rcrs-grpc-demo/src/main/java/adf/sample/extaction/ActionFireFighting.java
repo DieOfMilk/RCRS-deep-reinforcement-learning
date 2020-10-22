@@ -47,7 +47,8 @@ public class ActionFireFighting extends ExtAction
         int maxWater = scenarioInfo.getFireTankMaximum();
         // this.refillCompleted = (maxWater / 10) * developData.getInteger("ActionFireFighting.refill.completed", 10);
         this.refillCompleted = maxWater;
-        this.refillRequest = this.maxExtinguishPower * developData.getInteger("ActionFireFighting.refill.request", 1);
+        // this.refillRequest = this.maxExtinguishPower * developData.getInteger("ActionFireFighting.refill.request", 1);
+        this.refillRequest = this.maxExtinguishPower;
         this.refillFlag = false;
 
         this.target = null;
@@ -297,6 +298,25 @@ public class ActionFireFighting extends ExtAction
 
         List<StandardEntity> neighbourBuilding = new ArrayList<>();
         StandardEntity entity = this.worldInfo.getEntity(target);
+        pathPlanning.setFrom(agentPosition);
+        pathPlanning.setDestination(target);
+        List<EntityID> path = pathPlanning.calc().getResult();
+        if (path != null && path.size() > 0)
+        {
+            EntityID location;
+            if (path.size() >1){
+                location = path.get(path.size() - 2);
+            }
+            else{
+                location = path.get(path.size() - 1);
+            }
+            System.out.println("location is " +location.getValue());
+            if (agentPosition.getValue()!=location.getValue()) {
+                pathPlanning.setDestination(location);
+                path = pathPlanning.calc().getResult();
+                return new ActionMove(path);
+            }
+        }
         if (entity instanceof Building)
         {
             if (this.worldInfo.getDistance(positionEntity, entity) < this.maxExtinguishDistance)
@@ -304,14 +324,15 @@ public class ActionFireFighting extends ExtAction
                 neighbourBuilding.add(entity);
             }
         }
-
         if (neighbourBuilding.size() > 0)
         {
-            neighbourBuilding.sort(new DistanceSorter(this.worldInfo, agent));
-            if (((Building)neighbourBuilding.get(0)).isOnFire()){
-                return new ActionExtinguish(neighbourBuilding.get(0).getID(), this.maxExtinguishPower);
+            
+            if (((Building)entity).isOnFire()){
+                System.out.println("Try to turn off fire with" + agent.getWater());
+                return new ActionExtinguish(entity.getID(), this.maxExtinguishPower);
             }
         }
+        System.out.println("Need to move to extinguish fire");
         return this.getMoveAction(pathPlanning, agentPosition, target);
     }
 
@@ -352,7 +373,7 @@ public class ActionFireFighting extends ExtAction
         if (refillFlag)
         {
             StandardEntityURN positionURN = Objects.requireNonNull(this.worldInfo.getPosition(agent)).getStandardURN();
-            return (positionURN == HYDRANT) && agent.getWater() < this.refillRequest;
+            return !(positionURN == HYDRANT) || agent.getWater() < this.refillCompleted;
         }
         // return agent.getWater() <= this.refillRequest;
         return agent.getWater() <= this.refillCompleted;//
@@ -556,16 +577,33 @@ public class ActionFireFighting extends ExtAction
         }
         
         EntityID agentPosition = agent.getPosition();
-        StandardEntity positionEntity = Objects.requireNonNull(this.worldInfo.getPosition(agent));
-        if (StandardEntityURN.REFUGE == positionEntity.getStandardURN())
+        this.pathPlanning.setFrom(agentPosition);
+        this.pathPlanning.setDestination(this.target);
+        List<EntityID> path = this.pathPlanning.calc().getResult();
+        if (path != null && path.size() > 0)
         {
-            Action action = this.getMoveAction(pathPlanning, agentPosition, this.target);
-            if (action != null)
-            {
-                System.out.println("start from refuge");
+            EntityID location;
+            if (path.size() >1){
+                location = path.get(path.size() - 2);
+            }
+            else{
+                location = path.get(path.size() - 1);
+            }
+            if (agentPosition.getValue()!=location.getValue()) {
+                System.out.println("It's need to move");
                 return true;
             }
         }
+        StandardEntity positionEntity = Objects.requireNonNull(this.worldInfo.getPosition(agent));
+        // if (StandardEntityURN.REFUGE == positionEntity.getStandardURN())
+        // {
+        //     Action action = this.getMoveAction(pathPlanning, agentPosition, this.target);
+        //     if (action != null)
+        //     {
+        //         System.out.println("start from refuge");
+        //         return true;
+        //     }
+        // }
         List<StandardEntity> neighbourBuilding = new ArrayList<>();
         StandardEntity entity = this.worldInfo.getEntity(this.target);
         if (entity instanceof Building)
@@ -578,14 +616,15 @@ public class ActionFireFighting extends ExtAction
 
         if (neighbourBuilding.size() > 0)
         {
+            System.out.println(neighbourBuilding.size());
             neighbourBuilding.sort(new DistanceSorter(this.worldInfo, agent));
-            if(((Building)entity).isOnFire() && agent.getWater()>1000) {
+            if(((Building)entity).isOnFire() && agent.getWater()>=this.maxExtinguishPower) {
                 System.out.println("Need to extinguish");
                 return true;
             }
             else {
                 System.out.println("It's finished to extinguish fire or No fire on " + String.valueOf(this.target.getValue()));
-                System.out.println(((Building)entity).isOnFire());
+                System.out.println("the thing is" + ((Building)this.worldInfo.getEntity(this.target)).isOnFire());
                 return false;
             }
             

@@ -73,7 +73,8 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
     private static Logger logger;
     private FileHandler handler;
 
-    private static int[] previousList = {1962675462,0,0,210552869,0,0};
+    private static int[] previousList = {1694383525,0,0,1762940799,0,0};
+    // private static int[] previousList = {1962675462,0,0,210552869,0,0};
     private int agentNo;
 
     @Override
@@ -193,45 +194,7 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
         EntityID agentID = agentInfo.getID();
         
         // command
-        for (CommunicationMessage message : messageManager.getReceivedMessageList(CommandScout.class))
-        {
-            CommandScout command = (CommandScout) message;
-            if (command.isToIDDefined() && Objects.requireNonNull(command.getToID()).getValue() == agentID.getValue())
-            {
-                this.recentCommand = command;
-                this.commandExecutorScout.setCommand(command);
-            }
-        }
-
-        for (CommunicationMessage message : messageManager.getReceivedMessageList(CommandFire.class))
-        {
-            CommandFire command = (CommandFire) message;
-            if (command.isToIDDefined() && Objects.requireNonNull(command.getToID()).getValue() == agentID.getValue())
-            {
-                this.recentCommand = command;
-                this.commandExecutorFire.setCommand(command);
-            }
-        }
-
-        if (this.recentCommand != null)
-        {
-
-            Action action = null;
-            if (this.recentCommand.getClass() == CommandFire.class)
-            {
-                action = this.commandExecutorFire.calc().getAction();
-            }
-            else if (this.recentCommand.getClass() == CommandScout.class)
-            {
-                action = this.commandExecutorScout.calc().getAction();
-            }
-
-            if (action != null)
-            {
-                this.sendActionMessage(messageManager, agent, action);
-                return action;
-            }
-        }
+        
         // autonomous
         EntityID previousTarget = null;
         int previousAction = -1;
@@ -248,6 +211,8 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
         EntityID target;
         Action action;
         AgentProto agentproto;
+        this.buildingDetector.calc();
+        // this.search.calc();
         ((ActionFireFighting)this.actionFireFighting).setTarget(previousTarget);
         if(((ActionFireFighting)this.actionFireFighting).isBusy()){
             busy = 1;
