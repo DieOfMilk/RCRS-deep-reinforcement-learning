@@ -65,7 +65,7 @@ class RCRSEnv(gym.Env):
             self.connection.set_step_finished()
             self.done=True
         info = {}
-        if not np.isin(1,self.obs[0:-8:3]): # about remaining fire
+        if not np.isin(1,self.obs[0:-4]): # about remaining fire
             info['is_success']=True   
         else:
             info['is_success']=False
@@ -209,7 +209,7 @@ class RCRSEnv(gym.Env):
         isonfire = np.array(self.obs[0:-4])
         for i in isonfire:
             firenumber +=i
-        self.reward = 36-firenumber
+        self.reward = (36-firenumber)/36
         return self.reward
     def getObs(self):
         return self.obs
