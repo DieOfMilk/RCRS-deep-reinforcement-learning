@@ -61,9 +61,9 @@ public class TrafficSimulator extends StandardSimulator implements GUIComponent 
 	private static final double REAL_TIME_S = 60;
 	private static final int MICROSTEPS = (int) ((1000.0 / STEP_TIME_MS) * REAL_TIME_S);
 
-	private static final int RESCUE_AGENT_RADIUS = 500;
+	private static final int RESCUE_AGENT_RADIUS = 1000;
 	private static final int CIVILIAN_RADIUS = 200;
-	private static final double RESCUE_AGENT_VELOCITY_MEAN = 0.7;
+	private static final double RESCUE_AGENT_VELOCITY_MEAN = 5;
 	private static final double RESCUE_AGENT_VELOCITY_SD = 0.1;
 	private static final double CIVILIAN_VELOCITY_MEAN = 0.2;
 	private static final double CIVILIAN_VELOCITY_SD = 0.002;
@@ -240,7 +240,8 @@ public class TrafficSimulator extends StandardSimulator implements GUIComponent 
 			changes.addChange(human, human.getTravelDistanceProperty());
 		}
 		long end = System.currentTimeMillis();
-		Logger.info("Timestep " + c.getTime() + " took " + (end - start) + " ms");
+        Logger.info("Timestep " + c.getTime() + " took " + (end - start) + " ms");
+        System.out.println("Here is the traffic simulator");
 	}
 
 	@Override
@@ -339,7 +340,9 @@ public class TrafficSimulator extends StandardSimulator implements GUIComponent 
 		} else {
 			throw new IllegalArgumentException("Unrecognised agent type: " + h + " (" + h.getClass().getName() + ")");
 		}
-		TrafficAgent agent = new TrafficAgent(h, manager, radius, velocityLimit);
+        TrafficAgent agent = new TrafficAgent(h, manager, radius, velocityLimit);
+        System.out.println("The velocity limit is"+velocityLimit);
+        System.out.println(agent.getTravelDistance());
 		agent.setLocation(h.getX(), h.getY());
 		manager.register(agent);
 	}
@@ -478,7 +481,7 @@ public class TrafficSimulator extends StandardSimulator implements GUIComponent 
 
 		Line2D wallLine = inComingEdge.getLine();
 
-		int distance = 500;
+		int distance = 2500;
 		while (distance > 0) {
 			Vector2D offset = wallLine.getDirection().getNormal().normalised().scale(distance);
 			Point2D destXY = edgeMid.plus(offset);

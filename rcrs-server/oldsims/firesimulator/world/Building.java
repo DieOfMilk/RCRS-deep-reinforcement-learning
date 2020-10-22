@@ -285,6 +285,35 @@ public class Building extends StationaryObject {
         return fuel;
     }
 
+    // public int getFieryness(){
+    //     if(!isInflameable())
+    //         return 0;
+    //     if(this.fieryness>3){
+    //         return this.fieryness;
+    //     }
+    //     if(getTemperature()>=getIgnitionPoint()){
+    //         if(fuel>=getInitialFuel()*0.66)
+    //             return 1;   // burning, slightly damaged
+    //         if(fuel>=getInitialFuel()*0.33)
+    //             return 2;   // burning, more damaged
+    //         if(fuel>0)
+    //             return 3;    // burning, severly damaged
+    //     }
+    //     if(fuel==getInitialFuel())
+    //         if (wasEverWatered)
+    //             return 4;   // not burnt, but watered-damaged
+    //         else
+    //             return 0;   // not burnt, no water damage
+    //     if(fuel>=getInitialFuel()*0.66)
+    //         return 5;        // extinguished, slightly damaged
+    //     if(fuel>=getInitialFuel()*0.33)
+    //         return 6;        // extinguished, more damaged
+    //     if(fuel>0)
+    //         return 7;        // extinguished, severely damaged
+    //     fuel = 1;
+    //     return 7;           // completely burnt down
+    // }
+
     public int getFieryness(){
         if(!isInflameable())
             return 0;
@@ -424,6 +453,9 @@ public class Building extends StationaryObject {
         }
         if(rv==Double.NaN||rv==Double.POSITIVE_INFINITY||rv==Double.NEGATIVE_INFINITY)
             rv=Double.MAX_VALUE*0.75;
+        // if(rv>200){
+        //     rv = 200;
+        // }
         return rv;
     }
 

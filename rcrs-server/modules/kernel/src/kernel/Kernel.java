@@ -580,16 +580,12 @@ public class Kernel {
                     //     Entity tempAgent = next.getControlledEntity;
                     // }
                     // System.out.println("Generate worldproto successfully");
-                    ActionType actionType = null;
+                    ActionType actionType;
                     while(true){
                         actionType = blockingStub.withDeadlineAfter(60, TimeUnit.SECONDS).runTimestep(worldInfoProto);
                         if (actionType.getActionType()==0) {
                             System.out.println("send obs successfully");
                             break;
-                        }
-                        System.out.println("sending obs failed. Retry.");
-                        if(actionType == null) {
-                            System.out.println("return failed");
                         }
                     }
                 }

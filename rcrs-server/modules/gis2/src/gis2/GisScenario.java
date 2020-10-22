@@ -48,7 +48,7 @@ public class GisScenario implements rescuecore2.scenario.Scenario,
 			.createNamespace("scenario", SCENARIO_NAMESPACE_URI);
 
 	private static final int DEFAULT_HP = 10000;
-	private static final int DEFAULT_STAMINA = 10000;
+	private static final int DEFAULT_STAMINA = 100000;
 	private static final String WATER_QUANTITY_KEY = "fire.tank.maximum";
 
 	private static final QName ROOT_QNAME = DocumentHelper.createQName(

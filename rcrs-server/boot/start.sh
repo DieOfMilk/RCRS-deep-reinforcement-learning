@@ -1,6 +1,6 @@
 #!/bin/bash
-trap 'echo "killing..."; kill -9 $PIDS; ./kill_test.sh; exit' 15
-trap 'echo "killing..."; kill -9 $PIDS; ./kill_test.sh; exit' INT
+trap 'echo "killing..."; kill $PIDs; ./kill_test.sh & KP=$!; wait $KP; echo "done";exit' 15
+trap 'echo "killing..."; kill $PIDs; ./kill_test.sh & KP=$!; wait $KP; echo "done";exit' INT
 . functions.sh
 
 processArgs $*
@@ -19,3 +19,5 @@ waitFor $LOGDIR/kernel.log "Kernel has shut down" 30
 
 kill $PIDS
 ./kill_test.sh
+wait $!
+exit
