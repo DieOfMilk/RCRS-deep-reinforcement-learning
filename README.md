@@ -50,7 +50,7 @@ python3 -m pip install -e .
     ├── condor_scripts               //simple condor examples
     ├── gym-RCRS                     // gym environment part
     ├── log                          // autometically the save folder will generate. 
-    └── modify_PPO2.py
+    └── modify_PPO2_v2.py
 ```
 
 ## 4. How to run
