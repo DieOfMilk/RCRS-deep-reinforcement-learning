@@ -161,7 +161,7 @@ class RCRSEnv(gym.Env):
         self.timeStamp = -1
         time.sleep(1)
         self.server, self.connection  = self.serve(self.grpcNo)
-        time.sleep()
+        time.sleep(10)
         logName = self.mapName
         
         origin_map_path = './../rcrs-server/maps/gml/bigTest2'
