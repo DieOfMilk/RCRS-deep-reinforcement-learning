@@ -48,7 +48,7 @@ class RCRSEnv(gym.Env):
         self.action = [None,None]
         self.prevObs = None
         self.closed = False
-        self.server = None
+        self.connection = None
         
 
     def step(self):
@@ -153,21 +153,14 @@ class RCRSEnv(gym.Env):
         self.idNumber=3
         gc.collect()
         print("start reset")
-        if self.kernel:
-            self.kernel.terminate()
-            self.kernel.wait()
-        if self.agent:
-            self.agent.kill()
-            self.agent.wait()
-        if self.server:
-            self.server.stop(0)
+        if self.connection:
             self.connection.setClose()
         self.server = None
         self.connection = None
         self.timeStamp = -1
         time.sleep(1)
         self.server, self.connection  = self.serve(self.grpcNo)
-        time.sleep(10)
+        
         logName = self.mapName
         
         origin_map_path = './../rcrs-server/maps/gml/bigTest2'
@@ -176,6 +169,15 @@ class RCRSEnv(gym.Env):
             shutil.copytree(origin_map_path, map_path)
         except:
             pass
+        time.sleep(5)
+        if self.kernel:
+            self.kernel.terminate()
+            self.kernel.wait()
+        print("Kernel terminated")
+        if self.agent:
+            self.agent.kill()
+            self.agent.wait()
+        print("agent terminated")
         commonCfg = []
         common_path = os.path.join(map_path, 'config/common.cfg')
         with open(common_path, 'r') as f:
@@ -197,11 +199,11 @@ class RCRSEnv(gym.Env):
         else:
             self.kernel = subprocess.Popen("./start.sh -l {} -m {} -c {} -p {} -r {} -g".format(logpath,mapfile,common_path,self.portNo,self.grpcNo).split(), 
             shell=False, cwd = "./../rcrs-server/boot")
-        time.sleep(10)
+        time.sleep(8)
         self.connection.set_step_finished() 
         self.agent = subprocess.Popen("./launch.sh -all -s localhost:{} -r {}".format(self.portNo, self.grpcNo).split(),shell=False, cwd = "./../rcrs-grpc-demo")
         for _ in range(1):
-            for _ in range(20):
+            for _ in range(40):
                 x = self.wait_request(30,0.1) ## wait until action request
                 if x:
                     break
@@ -240,9 +242,8 @@ class RCRSEnv(gym.Env):
         if self.closed:
             print("terminated")
             exit(1)
-        else:
-            print("aget wait busy error")
-            exit(1)
+        print("aget wait busy error")
+        exit(1)
 
     def render(self):
         self.timeStamp = -1
@@ -301,10 +302,10 @@ class RCRSEnv(gym.Env):
             time.sleep(period)
         if self.closed:
             print("terminated")
-            return True
-        else:
-            print("No action request error with kernel {}, env {}".format(self.connection.getTimeStamp(), self.timeStamp))
-            return False
+            exit(1)
+        print("No action request error with kernel {}, env {}".format(self.connection.getTimeStamp(), self.timeStamp))
+        # exit()
+        return False
     def getReward(self):
         isonfire = np.array(self.obs[0:-len(self.agentList)])
         print(self.obs)
@@ -339,7 +340,7 @@ class RCRSEnv(gym.Env):
         if self.agent:
             self.agent.kill()
             self.agent.wait()
-        self.server.stop(0)
+        del self.connection
         self.connection.setClose()
         self.connection = None
     def normalization(self, obs):
@@ -375,6 +376,7 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
         self.buildingIdList = buildingIdList
         self.stepfinished = False
         self.closed = False
+
     def AskBusy(self, request, context):
         # print("get something on here")
         # print(request)
@@ -482,11 +484,9 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
         if self.closed:
             print("terminated")
             exit(1)
-            return True
-        else:
-            print("action get error")
-            exit(1)
-            return False
+        print("action get error")
+        exit()
+        return False
     def getObs(self,timeout, period):
         must_end = time.time() + timeout
         while time.time() < must_end and not self.closed:
@@ -499,11 +499,9 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
         if self.closed:
             print("terminated")
             exit(1)
-            return True
-        else:
-            print("obs get error")
-            exit()
-            return False
+        print("obs get error")
+        exit()
+        return False
     def getBusy(self,timeout, period):
         must_end = time.time() + timeout
         while time.time() < must_end and not self.closed:
@@ -517,10 +515,9 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
         if self.closed:
             print("terminated")
             exit(1)
-        else:
-            print("busy get error")
-            exit()
-            return False
+        print("busy get error")
+        exit()
+        return False
     def copyBusy(self,timeout, period):
         must_end = time.time() + timeout
         while time.time() < must_end and not self.closed:
@@ -532,10 +529,9 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
         if self.closed:
             print("terminated")
             exit(1)
-        else:
-            print("busy copy error")
-            exit()
-            return False
+        print("busy copy error")
+        exit()
+        return False
     def wait_step_finish(self, timeout, period):
         must_end = time.time() + timeout
         while time.time() < must_end and not self.closed:
@@ -547,10 +543,9 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
         if self.closed:
             print("terminated")
             exit(1)
-        else:
-            print("previous step didn't finsihed")
-            exit()
-            return False
+        print("previous step didn't finsihed")
+        exit()
+        return False
     def set_step_finished(self):
         self.stepfinished = True
         return True
