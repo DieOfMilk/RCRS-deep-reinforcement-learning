@@ -4,7 +4,7 @@ trap 'echo "agent killing..."; echo $PIDS; killfunction;' 15
 function killfunction () {
     for i in $PIDS
     do
-        pkill -P $i
+        kill $i
     done
     exit
 }
@@ -21,7 +21,7 @@ CP=`find $PWD/library/ -name '*.jar' ! -name '*-sources.jar' | awk -F '\n' -v OR
 if [ ! -z "$1" ]; then
   echo "hi"
   echo "${CP}./build/classes/java/main"
-  sh -c "java -classpath '${CP}./build/classes/java/main' adf.Main ${LOADER} $*"
+  java -classpath '${CP}./build/classes/java/main' adf.Main ${LOADER} $*
   PIDS="$PIDS $!"
 else
   echo "Options:"
