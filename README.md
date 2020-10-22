@@ -49,8 +49,9 @@ python3 -m pip install -e .
 └── script
     ├── condor_scripts               //simple condor examples
     ├── gym-RCRS                     // gym environment part
-    ├── log                          // autometically the save folder will generate. 
-    └── modify_PPO2_v2.py
+    ├── log                          // autometically the save folder will generate
+    ├── performance_test.py         // generate test data of each time step policy
+    └── modify_PPO2_v2.py           // learning codes with PPO algorithm
 ```
 
 ## 4. How to run
