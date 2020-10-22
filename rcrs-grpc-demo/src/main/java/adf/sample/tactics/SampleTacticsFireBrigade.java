@@ -245,6 +245,7 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
                 }
             } catch (StatusRuntimeException e) {
                 System.out.println("line 282 setactiontype error");
+                break;
             }
         }
         
