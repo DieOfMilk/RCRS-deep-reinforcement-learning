@@ -3,7 +3,7 @@ import numpy as np
 import random
 import math
 import os
-import gym_RCRS2
+import gym_RCRS
 import time
 import gym
 from stable_baselines import PPO2
@@ -33,25 +33,20 @@ if __name__=='__main__':
     startTime = datetime.now()
     # with tf.Graph().as_default():
     #         gpu_options = tf.GPUOptions(allow_growth=True)
-    log_dir = './tmp/record/'
     if len(sys.argv) == 4:
-        env = gym.make("RCRS2-v0", portNo=int(sys.argv[1]), grpcNo=int(sys.argv[2]), buildingNo=36, maxTimeStamp=100,mapName=sys.argv[3])
+        env = gym.make("RCRS-v0", portNo=int(sys.argv[1]), grpcNo=int(sys.argv[2]), buildingNo=36, maxTimeStamp=100,mapName=sys.argv[3])
     else:
-        env = gym.make("RCRS2-v0", portNo=7003, grpcNo=50053, buildingNo=56, maxTimeStamp=30, mapName='bigTest2',verbose=False)
-    # model =DQN('MlpPolicy', env, learning_rate=3e-4, prioritized_replay=True, verbose=0,tensorboard_log="./tmp/tensor/Env_test2")
-    # env = Monitor(env, log_dir, allow_early_resets=True)
+        env = gym.make("RCRS-v0", portNo=7003, grpcNo=50053, buildingNo=56, maxTimeStamp=30, mapName='bigTest2',verbose=False)
     temp = env
     env = DummyVecEnv([lambda: env]) 
-    # env = VecNormalize(env, norm_obs=True, norm_reward=False, clip_obs=10.)
-    learning_rate = 0.07
     trial=1
-    
+    map_name = input("please enter the map name")
     result = []
-    for j in range(29):
+    for j in range(50):
         print(j)
-        model = myPPO2.load('./log/RCRS_big2_1/{}.zip'.format(j*20+10),env = env)
+        model = myPPO2.load('./log/{}/{}.zip'.format(map_name,j*20+10),env = env)
         temp_result=[]
-        for _ in range(3):
+        for _ in range(5):
             idNumber = 3
             obs = env.reset()
             total_sum=0
