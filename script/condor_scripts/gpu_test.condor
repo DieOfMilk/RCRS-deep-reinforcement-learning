@@ -4,8 +4,8 @@ requirements = (GPUs >= 1)
 +ProjectDescription = "Learn how to use condor"
 +Project = "OTHER"
 +Group = "GRAD"
-Notification = never
-Notify_user = milk@cs.utexas.edu
+Notification = Always
+Notify_user = milk@unist.ac.kr
 Input = condor/in.$(Process)
 Output     = condor/out.$(Process)
 Error      = condor/err.$(Process)
