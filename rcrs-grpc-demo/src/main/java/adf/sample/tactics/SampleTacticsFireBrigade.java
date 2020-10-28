@@ -225,7 +225,7 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
         while(true){
             try {
                 // System.out.println(busyproto.getAgentID());
-                check = this.blockingStub.withDeadlineAfter(900, TimeUnit.SECONDS).askBusy(busyproto);
+                check = this.blockingStub.withDeadlineAfter(60, TimeUnit.SECONDS).askBusy(busyproto);
                 if(check.getCheck()==1){
                     break;
                 }
@@ -239,7 +239,7 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
         ActionType actionType = null;
         while(true){
             try {
-                actionType = this.blockingStub.withDeadlineAfter(900, TimeUnit.SECONDS).setActionType(agentproto);
+                actionType = this.blockingStub.withDeadlineAfter(60, TimeUnit.SECONDS).setActionType(agentproto);
                 if (actionType.getActionType()>0) {
                     break;
                 }
