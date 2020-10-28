@@ -360,7 +360,7 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
         {target = agent.getPosition();}
         if (actionIndex != -1)
         {
-            // System.out.println(target.getValue());
+            System.out.println("done with" + target.getValue());
             messageManager.addMessage(new MessageFireBrigade(true, agent, actionIndex, target));
         }
     }
