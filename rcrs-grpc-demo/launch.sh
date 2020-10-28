@@ -1,10 +1,12 @@
 #!/bin/bash
 trap 'echo "agent killing..."; echo $PIDS; killfunction;' 15
 
+
 function killfunction () {
+    echo "hi 2"
     for i in $PIDS
     do
-        kill $i
+        pkill -P $i
     done
     exit
 }
@@ -19,10 +21,14 @@ echo "$PWD"
 CP=`find $PWD/library/ -name '*.jar' ! -name '*-sources.jar' | awk -F '\n' -v ORS=':' '{print}'`
 # echo "${CP}"
 if [ ! -z "$1" ]; then
-  echo "hi"
-  echo "${CP}./build/classes/java/main"
-  java -classpath '${CP}./build/classes/java/main' adf.Main ${LOADER} $*
+  echo "hi 1"
+  sh -c "java -classpath '${CP}./build/classes/java/main' adf.Main ${LOADER} $*" &
   PIDS="$PIDS $!"
+  echo "$PIDS"
+  while true; do
+  sleep 1
+  done
+  echo "hi 3"
 else
   echo "Options:"
   echo "-t [FB],[FS],[PF],[PO],[AT],[AC] number of agents"
@@ -43,4 +49,4 @@ else
   echo "-r [GRPC]                        Grpc port number"
 fi
 
-
+echo "hi finished"
