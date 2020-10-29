@@ -41,7 +41,7 @@ public class TestSearchForFire extends Search {
 
 	public TestSearchForFire(AgentInfo ai, WorldInfo wi, ScenarioInfo si, ModuleManager moduleManager, DevelopData developData) {
 		super(ai, wi, si, moduleManager, developData);
-		logger = TestLogger.getLogger(agentInfo.me());
+		// logger = TestLogger.getLogger(agentInfo.me());
 		this.unsearchedBuildingIDs = new HashSet<>();
 
 		StandardEntityURN agentURN = ai.me().getStandardURN();
@@ -61,7 +61,7 @@ public class TestSearchForFire extends Search {
 
 	@Override
 	public Search updateInfo(MessageManager messageManager) {
-		logger.debug("Time:" + agentInfo.getTime());
+		// logger.debug("Time:" + agentInfo.getTime());
 		super.updateInfo(messageManager);
 
 		this.unsearchedBuildingIDs.removeAll(this.worldInfo.getChanged().getChangedEntities());
@@ -78,17 +78,17 @@ public class TestSearchForFire extends Search {
 		if (unsearchedBuildingIDs.isEmpty())
 			return this;
 
-		logger.debug("unsearchedBuildingIDs:" + unsearchedBuildingIDs);
+		// logger.debug("unsearchedBuildingIDs:" + unsearchedBuildingIDs);
 		this.pathPlanning.setFrom(this.agentInfo.getPosition());
 		this.pathPlanning.setDestination(this.unsearchedBuildingIDs);
 		List<EntityID> path = this.pathPlanning.calc().getResult();
-		logger.debug("best path is:"+path);
+		// logger.debug("best path is:"+path);
 		if (path != null && path.size() > 2) {
 			this.result = path.get(path.size() - 3);
 		}else if (path != null && path.size() > 0) {
 			this.result = path.get(path.size() - 1);
 		}
-		logger.debug("choosed:"+result);
+		// logger.debug("choosed:"+result);
 		return this;
 	}
 

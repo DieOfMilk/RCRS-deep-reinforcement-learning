@@ -31,14 +31,14 @@ public class TestHumanDetector extends HumanDetector {
 
 	public TestHumanDetector(AgentInfo ai, WorldInfo wi, ScenarioInfo si, ModuleManager moduleManager, DevelopData developData) {
 		super(ai, wi, si, moduleManager, developData);
-		logger = TestLogger.getLogger(agentInfo.me());
+		// logger = TestLogger.getLogger(agentInfo.me());
 		this.clustering = moduleManager.getModule("TestHumanDetector.Clustering", "adf.sample.module.algorithm.SampleKMeans");
 		registerModule(this.clustering);
 	}
 
 	@Override
 	public HumanDetector updateInfo(MessageManager messageManager) {
-		logger.debug("Time:"+agentInfo.getTime());
+		// logger.debug("Time:"+agentInfo.getTime());
 		super.updateInfo(messageManager);
 		return this;
 	}
@@ -47,14 +47,14 @@ public class TestHumanDetector extends HumanDetector {
 	public HumanDetector calc() {
 		Human transportHuman = this.agentInfo.someoneOnBoard();
 		if (transportHuman != null) {
-			logger.debug("someoneOnBoard:" + transportHuman);
+			// logger.debug("someoneOnBoard:" + transportHuman);
 			this.result = transportHuman.getID();
 			return this;
 		}
 		if (this.result != null) {
 			Human target = (Human) this.worldInfo.getEntity(this.result);
 			if (!isValidHuman(target)) {
-				logger.debug("Invalid Human:" + target + " ==>reset target");
+				// logger.debug("Invalid Human:" + target + " ==>reset target");
 				this.result = null;
 			}
 		}
@@ -72,11 +72,11 @@ public class TestHumanDetector extends HumanDetector {
 			targets = rescueTargets;
 
 		
-		logger.debug("Targets:"+targets);
+		// logger.debug("Targets:"+targets);
 		if (!targets.isEmpty()) {
 			targets.sort(new DistanceSorter(this.worldInfo, this.agentInfo.me()));
 			Human selected = targets.get(0);
-			logger.debug("Selected:"+selected);
+			// logger.debug("Selected:"+selected);
 			return selected.getID();
 		}
 		

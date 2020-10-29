@@ -80,7 +80,7 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
     @Override
     public void initialize(AgentInfo agentInfo, WorldInfo worldInfo, ScenarioInfo scenarioInfo, ModuleManager moduleManager, MessageManager messageManager, DevelopData developData)
     {
-        logger = TestLogger.getLogger(agentInfo.me());
+        // logger = TestLogger.getLogger(agentInfo.me());
         messageManager.setChannelSubscriber(moduleManager.getChannelSubscriber("MessageManager.PlatoonChannelSubscriber", "adf.sample.module.comm.SampleChannelSubscriber"));
         messageManager.setMessageCoordinator(moduleManager.getMessageCoordinator("MessageManager.PlatoonMessageCoordinator", "adf.sample.module.comm.SampleMessageCoordinator"));
         worldInfo.indexClass(

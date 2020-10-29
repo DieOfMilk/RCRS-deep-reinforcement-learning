@@ -31,7 +31,7 @@ public class TestBuildingDetector extends BuildingDetector {
 
 	public TestBuildingDetector(AgentInfo ai, WorldInfo wi, ScenarioInfo si, ModuleManager moduleManager, DevelopData developData) {
 		super(ai, wi, si, moduleManager, developData);
-		logger = TestLogger.getLogger(agentInfo.me());
+		// logger = TestLogger.getLogger(agentInfo.me());
 		this.clustering = moduleManager.getModule("TestBuildingDetector.Clustering", "adf.sample.module.algorithm.SampleKMeans");
 		registerModule(this.clustering);
 
@@ -39,7 +39,7 @@ public class TestBuildingDetector extends BuildingDetector {
 
 	@Override
 	public BuildingDetector updateInfo(MessageManager messageManager) {
-		logger.debug("Time:" + agentInfo.getTime());
+		// logger.debug("Time:" + agentInfo.getTime());
 		super.updateInfo(messageManager);
 		return this;
 	}
@@ -59,13 +59,13 @@ public class TestBuildingDetector extends BuildingDetector {
 		List<Building> targets = clusterBuildings;
 		if (clusterBuildings.isEmpty())
 			targets = fireyBuildings;
-		logger.debug("FieryBuildingsTargets: " + targets);
+		// logger.debug("FieryBuildingsTargets: " + targets);
 		if (targets.isEmpty())
 			return null;
 
 		Collections.sort(targets, new DistanceSorter(worldInfo, agentInfo.me()));
 		Building selectedBuilding = targets.get(0);
-		logger.debug("Selected:" + selectedBuilding);
+		// logger.debug("Selected:" + selectedBuilding);
 		return selectedBuilding.getID();
 	}
 

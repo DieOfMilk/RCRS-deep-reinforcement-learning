@@ -54,7 +54,7 @@ public class TestRoadDetector extends RoadDetector {
 
 	public TestRoadDetector(AgentInfo ai, WorldInfo wi, ScenarioInfo si, ModuleManager moduleManager, DevelopData developData) {
 		super(ai, wi, si, moduleManager, developData);
-		logger = TestLogger.getLogger(agentInfo.me());
+		// logger = TestLogger.getLogger(agentInfo.me());
 		this.pathPlanning = moduleManager.getModule("TestRoadDetector.PathPlanning", "adf.sample.module.algorithm.SamplePathPlanning");
 		this.clustering = moduleManager.getModule("TestRoadDetector.Clustering", "adf.sample.module.algorithm.SampleKMeans");
 		registerModule(this.clustering);
@@ -65,7 +65,7 @@ public class TestRoadDetector extends RoadDetector {
 
 	@Override
 	public RoadDetector updateInfo(MessageManager messageManager) {
-		logger.debug("Time:"+agentInfo.getTime());
+		// logger.debug("Time:"+agentInfo.getTime());
 		super.updateInfo(messageManager);
 		return this;
 	}
@@ -76,13 +76,13 @@ public class TestRoadDetector extends RoadDetector {
 		StandardEntity currentPosition = worldInfo.getEntity(positionID);
 		openedAreas.add((Area) currentPosition);
 		if (positionID.equals(result)) {
-			logger.debug("reach to " + currentPosition + " reseting target");
+			// logger.debug("reach to " + currentPosition + " reseting target");
 			this.result = null;
 		}
 
 		if (this.result == null) {
 			HashSet<Area> currentTargets = calcTargets();
-			logger.debug("Targets: " + currentTargets);
+			// logger.debug("Targets: " + currentTargets);
 			if (currentTargets.isEmpty()) {
 				this.result = null;
 				return this;
@@ -93,7 +93,7 @@ public class TestRoadDetector extends RoadDetector {
 			if (path != null && path.size() > 0) {
 				this.result = path.get(path.size() - 1);
 			}
-			logger.debug("Selected Target: " + this.result);
+			// logger.debug("Selected Target: " + this.result);
 		}
 		return this;
     }
