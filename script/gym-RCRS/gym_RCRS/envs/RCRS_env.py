@@ -168,7 +168,7 @@ class RCRSEnv(gym.Env):
         self.server = None
         self.connection = None
         self.timeStamp = -1
-        time.sleep(1)
+        time.sleep(5)
         self.server, self.connection  = self.serve(self.grpcNo)
         time.sleep(10)
         logName = self.mapName
