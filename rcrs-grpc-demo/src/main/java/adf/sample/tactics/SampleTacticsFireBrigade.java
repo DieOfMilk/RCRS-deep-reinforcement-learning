@@ -211,7 +211,7 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
         EntityID target;
         Action action;
         AgentProto agentproto;
-        this.buildingDetector.calc();
+        // this.buildingDetector.calc();
         // this.search.calc();
         ((ActionFireFighting)this.actionFireFighting).setTarget(previousTarget);
         if(((ActionFireFighting)this.actionFireFighting).isBusy()){
@@ -225,7 +225,8 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
         while(true){
             try {
                 // System.out.println(busyproto.getAgentID());
-                check = this.blockingStub.withDeadlineAfter(60, TimeUnit.SECONDS).askBusy(busyproto);
+                // check = this.blockingStub.withDeadlineAfter(60, TimeUnit.SECONDS).askBusy(busyproto);
+                check = this.blockingStub.askBusy(busyproto);
                 if(check.getCheck()==1){
                     break;
                 }
@@ -239,7 +240,8 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
         ActionType actionType = null;
         while(true){
             try {
-                actionType = this.blockingStub.withDeadlineAfter(60, TimeUnit.SECONDS).setActionType(agentproto);
+                // actionType = this.blockingStub.withDeadlineAfter(60, TimeUnit.SECONDS).setActionType(agentproto);
+                actionType = this.blockingStub.setActionType(agentproto);
                 if (actionType.getActionType()>0) {
                     break;
                 }

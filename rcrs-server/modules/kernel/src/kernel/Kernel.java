@@ -582,7 +582,8 @@ public class Kernel {
                     // System.out.println("Generate worldproto successfully");
                     ActionType actionType;
                     while(true){
-                        actionType = blockingStub.withDeadlineAfter(60, TimeUnit.SECONDS).runTimestep(worldInfoProto);
+                        // actionType = blockingStub.withDeadlineAfter(60, TimeUnit.SECONDS).runTimestep(worldInfoProto);
+                        actionType = blockingStub.runTimestep(worldInfoProto);
                         if (actionType.getActionType()==0) {
                             System.out.println("send obs successfully");
                             break;

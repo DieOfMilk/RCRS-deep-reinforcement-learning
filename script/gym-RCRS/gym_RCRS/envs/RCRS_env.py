@@ -200,17 +200,17 @@ class RCRSEnv(gym.Env):
         else:
             self.kernel = subprocess.Popen("./start.sh -l {} -m {} -c {} -p {} -r {} -g".format(logpath,mapfile,common_path,self.portNo,self.grpcNo).split(), 
             shell=False, cwd = "./../rcrs-server/boot")
-        time.sleep(10)
+        time.sleep(30)
         self.connection.set_step_finished() 
         self.agent = subprocess.Popen("./launch.sh -all -s localhost:{} -r {}".format(self.portNo, self.grpcNo).split(),shell=False, cwd = "./../rcrs-grpc-demo")
-        for _ in range(1):
-            for _ in range(20):
-                x = self.wait_request(90,0.1) ## wait until action request
-                if x:
-                    break
-                self.agent.terminate()
-                self.agent.wait()
-                self.agent = subprocess.Popen("./launch.sh -all -s localhost:{} -r {}".format(self.portNo, self.grpcNo).split(),shell=False, cwd = "./../rcrs-grpc-demo")
+        # for _ in range(1):
+            # for _ in range(20):
+        x = self.wait_request(900,0.1) ## wait until action request
+                # if x:
+                #     break
+                # self.agent.terminate()
+                # self.agent.wait()
+                # self.agent = subprocess.Popen("./launch.sh -all -s localhost:{} -r {}".format(self.portNo, self.grpcNo).split(),shell=False, cwd = "./../rcrs-grpc-demo")
         self.obs = self.connection.getObs(900,0.1)
         self.busy = self.connection.getBusy(900,0.1)
         self.obs=np.append(self.obs,self.busy)
@@ -436,7 +436,7 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
             return RCRS_pb2.ActionType(actionType= 4, x=float(x), y=float(y))
     def RunTimestep(self, request, context):
         ## should wait until previous timestep is finished
-        check = self.wait_step_finish(150,0.1)
+        check = self.wait_step_finish(900,0.1)
         if not check:
             print("previous step error")
             exit(1)
