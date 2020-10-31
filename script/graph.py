@@ -27,7 +27,7 @@ if __name__=='__main__':
         new_total.append(sum(i)/3)
     gready = []
     for _ in range(10,990,20):
-        gready.append(-166)
+        gready.append(-1)
 
     matplotlib.rcParams.update({'font.size':30})
 
