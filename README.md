@@ -118,6 +118,9 @@ Below is example sturucture on condor.
 │   └── script                              //start.sh should be on ./RCRS-deep-reinforcement-learing/script/
 
 ```
+
+Before submit condor files, we should generate "in." files, which are input files for condor nodes. You can geneate example input files using `script/condor_scripts/generate.py`. Please generate "in." files and move it to `condor` folder.
+
 ## warning
 * If you want to change some bash script, generate bash script, please set up `#!/bin/bash`, not `#!/bin/sh`. It may not works for RCRS.
 * When your codes failed on condor, please change port numbers. Sometimes, port number duplication was happended. 
