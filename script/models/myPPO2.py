@@ -543,7 +543,7 @@ class myRunner(AbstractEnvRunner):
                 self.env.envs[0].reset()
                 self.episode_num+=1
                 self.finalFireNumber.append(infos[0]['finalFireNumber'])
-                if self.episode_num%5==0:
+                if self.episode_num%50==0:
                     temp_data_path = os.path.join(Path(self.ppo.save_path).parent,str(self.episode_num))
                     self.ppo.save(temp_data_path)
 
