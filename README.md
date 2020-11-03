@@ -126,4 +126,5 @@ Before submit condor files, we should generate "in." files, which are input file
 * When your codes failed on condor, please change port numbers. Sometimes, port number duplication was happended. 
 * Be sure that every nodes should use different map names with each others. If duplication happended, generated log files will be crashed and RCRS server will terminated. 
 * Be careful that in this version, if the condor job is suspended over 5 mintues, it will terminate automatically even in the gpu test. Next version I will fix that limitation. 
+* This model save temperal policy after every 50 episode. If you want to modifiy this frequency, please modify `script/models/myPPO2.py` line 546, `if self.episode_num%50==0:`.
 
