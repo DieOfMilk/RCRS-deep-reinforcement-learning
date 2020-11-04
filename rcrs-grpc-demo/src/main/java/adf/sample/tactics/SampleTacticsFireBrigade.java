@@ -254,30 +254,30 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
         if (busy==2){
             switch(actionType.getActionType()) {
                 case 1:
-                    System.out.println("Case move with target setting");
+                    // System.out.println("Case move with target setting");
                     previousTarget = new EntityID((int)actionType.getX());
                     ((ActionFireFighting)this.actionFireFighting).setTarget(new EntityID((int)actionType.getX()));
                     action = ((ActionFireFighting)this.actionFireFighting).mycalc().getAction();
                     previousAction = 1;
                     break;
                 case 2:
-                    System.out.println("Case move");
+                    // System.out.println("Case move");
                     ((ActionFireFighting)this.actionFireFighting).setTarget(previousTarget);
                     action = ((ActionFireFighting)this.actionFireFighting).mycalc().getAction();
                     previousAction = 2;
                     break;
                 case 3:
-                    System.out.println("Case water refill");
+                    // System.out.println("Case water refill");
                     action = ((ActionFireFighting)this.actionFireFighting).callRefill().getAction();
                     previousAction = 3;
                     break;
                 case 4:
-                    System.out.println("Case take a rest");
+                    // System.out.println("Case take a rest");
                     action = new ActionRest(); 
                     previousAction = 4;
                     break;
                 default:
-                    System.out.println("Case default");
+                    // System.out.println("Case default");
                     action = new ActionRest();
                     break;
             }
@@ -287,25 +287,25 @@ public class SampleTacticsFireBrigade extends TacticsFireBrigade
         else {
             switch(previousAction) {
                 case 1:
-                    System.out.println("Case move with busy");
+                    // System.out.println("Case move with busy");
                     ((ActionFireFighting)this.actionFireFighting).setTarget(previousTarget);
                     action = ((ActionFireFighting)this.actionFireFighting).mycalc().getAction();
                     break;
                 case 2:
-                    System.out.println("Case move with busy");
+                    // System.out.println("Case move with busy");
                     ((ActionFireFighting)this.actionFireFighting).setTarget(previousTarget);
                     action = ((ActionFireFighting)this.actionFireFighting).mycalc().getAction();
                     break;
                 case 3:
-                    System.out.println("Case water refill with busy");
+                    // System.out.println("Case water refill with busy");
                     action = ((ActionFireFighting)this.actionFireFighting).callRefill().getAction();
                     break;
                 case 4:
-                    System.out.println("Case take a rest with busy");
+                    // System.out.println("Case take a rest with busy");
                     action = new ActionRest(); 
                     break;
                 default:
-                    System.out.println("Case default with busy");
+                    // System.out.println("Case default with busy");
                     action = new ActionRest();
                     break;
             }

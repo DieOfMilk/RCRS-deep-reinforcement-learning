@@ -85,12 +85,7 @@ class RCRSEnv(gym.Env):
             self.obs=np.append(self.obs,self.busy[1])
         # if self.idNumber == 2:
         #     self.obs = self.convertObs()
-        print(self.action)
-        print(self.idNumber)
-        print(self.obs)
-        print("the reward is ",self.reward)
         if self.timeStamp>=self.maxTimeStamp:
-            print("finished max time stamp")
             while self.idNumber != 3:
                 self.input(self.buildingNo)
                 self.run_action()
@@ -118,7 +113,6 @@ class RCRSEnv(gym.Env):
             info['finalFireNumber'] =  firenumber
         info['idNumber'] = self.idNumber
         final_obs = self.normalization(self.obs)
-        print(final_obs)
         returnReward = self.reward.copy()
         returnReward[0] = returnReward[0]/50
         returnReward[1] = returnReward[1]/50
@@ -152,19 +146,15 @@ class RCRSEnv(gym.Env):
         self.reward = [0,0]
         self.idNumber=3
         gc.collect()
-        print("start reset")
         if self.kernel:
             self.kernel.terminate()
             self.kernel.wait()
-        print("kernel reset")
         if self.agent:
             self.agent.terminate()
             self.agent.wait()
-        print("agent reset")
         if self.server:
             self.server.stop(5).wait()
             self.connection.setClose()
-        print("Connection reset")
         self.server = None
         self.connection = None
         self.timeStamp = -1
@@ -220,7 +210,6 @@ class RCRSEnv(gym.Env):
         self.input(self.buildingNo)
         self.input(self.buildingNo)
         self.step()
-        print("reset finished")
         return self.obs
     def input(self,action):
         if self.action[0] == None:
@@ -237,11 +226,9 @@ class RCRSEnv(gym.Env):
         must_end = time.time() + timeout
         while time.time() < must_end and not self.closed:
             if np.isin(2,self.connection.copyBusy(timeout, period)):
-                print("At least one agent is idle")
                 return self.connection.copyBusy(timeout, period)
             time.sleep(period)
         if self.closed:
-            print("terminated")
             exit(1)
         else:
             print("aget wait busy error")
@@ -299,32 +286,26 @@ class RCRSEnv(gym.Env):
         while time.time() < must_end and not self.closed:
             if self.timeStamp+1 == self.connection.getTimeStamp():
                 self.timeStamp = self.connection.getTimeStamp()
-                print("run time stamp with {}".format(self.timeStamp))
                 return True
             time.sleep(period)
         if self.closed:
-            print("terminated")
             return True
         else:
             print("No action request error with kernel {}, env {}".format(self.connection.getTimeStamp(), self.timeStamp))
             return False
     def getReward(self):
         isonfire = np.array(self.obs[0:-len(self.agentList)])
-        print(self.obs)
         wasonfire = np.array(self.prevObs[0:-len(self.agentList)])  ## get the building information part
-        print(self.prevObs)
         for i in range(self.buildingNo):
             if (wasonfire[i*2+1] < 5 and isonfire[i*2+1] >= 5) or wasonfire[i*2+1] > isonfire[i*2+1]:
                 self.reward[0] +=1
                 self.reward[1] +=1
             elif (isonfire[i*2+1] < 5) and (wasonfire[i*2+1] < isonfire[i*2+1] or wasonfire[i*2+1] >= 5):
-                print("the negative one is ", i)
                 self.reward[0] -=1
                 self.reward[1] -=1
         if (self.prevObs[-2]<5000 and self.obs[-2]>5000) or (self.prevObs[-1]<5000 and self.obs[-1]>5000):
               self.reward[0]+=1
               self.reward[1]+=1
-        print(self.reward)
         return self.reward
     def getObs(self):
         return self.obs
@@ -380,19 +361,13 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
         self.closed = False
         
     def AskBusy(self, request, context):
-        # print("get something on here")
-        # print(request)
         for i in range(len(self.agentList)):
             if request.AgentID == self.agentList[i]:
-                # print("yes")
                 self.busycheck[i] = 1
                 self.busy[i] = request.Busy
                 if self.busy[i] == 2:
                     self.action[i] = None
-                # print("check busy from agent")
                 break
-            # else:
-                # print("No", request.AgentID)
         return RCRS_pb2.Check(check=1)
 
     def SetActionType(self, request, context):
@@ -400,7 +375,6 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
             time.sleep(0.5)
             return RCRS_pb2.ActionType(actionType= 4, x=float(0), y=float(0))
         if request.AgentType == 2:
-            print("Select Action of Fire Brigade: ")
         if request.AgentType == 3:
             time.sleep(0.5)
             return RCRS_pb2.ActionType(actionType= 4, x=float(0), y=float(0))
@@ -466,7 +440,6 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
                 # obs.append(self.busycheck)
         obs = np.append(obs,temp)
         self.obs = obs
-        print("generate obs successfully")
         return RCRS_pb2.ActionType(actionType=0, x=float(0), y=float(0))
 
     def getTimeStamp(self):
@@ -480,11 +453,9 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
         must_end = time.time() + timeout
         while time.time() < must_end and not self.closed:
             if self.action[idNumber] != None:
-                print("action get successfully at {}".format(idNumber))
                 return True
             time.sleep(period)
         if self.closed:
-            print("terminated")
             exit(1)
             return True
         else:
@@ -495,13 +466,11 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
         must_end = time.time() + timeout
         while time.time() < must_end and not self.closed:
             if not (self.obs is None):
-                print("return obs at get obs")
                 obs = self.obs.copy()
                 self.obs= None
                 return obs
             time.sleep(period)
         if self.closed:
-            print("terminated")
             exit(1)
             return True
         else:
@@ -512,14 +481,11 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
         must_end = time.time() + timeout
         while time.time() < must_end and not self.closed:
             if not np.isin(0,self.busycheck):
-                print("get Busy")
                 busy = self.busy.copy()
-                print(busy)
                 self.busycheck = np.zeros(len(self.agentList),dtype=np.int)
                 return busy
             time.sleep(period)
         if self.closed:
-            print("terminated")
             exit(1)
         else:
             print("busy get error")
@@ -529,12 +495,10 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
         must_end = time.time() + timeout
         while time.time() < must_end and not self.closed:
             if not np.isin(0,self.busycheck):
-                print("get Busy")
                 busy = self.busy.copy()
                 return busy
             time.sleep(period)
         if self.closed:
-            print("terminated")
             exit(1)
         else:
             print("busy copy error")
@@ -544,12 +508,10 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
         must_end = time.time() + timeout
         while time.time() < must_end and not self.closed:
             if self.stepfinished:
-                print("previous step finished")
                 self.stepfinished = False
                 return True
             time.sleep(period)
         if self.closed:
-            print("terminated")
             exit(1)
         else:
             print("previous step didn't finsihed")

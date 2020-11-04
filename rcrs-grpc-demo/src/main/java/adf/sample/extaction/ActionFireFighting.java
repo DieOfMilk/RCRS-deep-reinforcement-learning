@@ -201,10 +201,10 @@ public class ActionFireFighting extends ExtAction
 
     public ExtAction mycalc()
     {
-        if (this.target != null)
-            {System.out.println(this.target.getValue());}
-        else
-            {System.out.println("target is null");}
+        // if (this.target != null)
+        //     {System.out.println(this.target.getValue());}
+        // else
+        //     {System.out.println("target is null");}
         this.result = null;
         FireBrigade agent = (FireBrigade) this.agentInfo.me();
 
@@ -260,7 +260,7 @@ public class ActionFireFighting extends ExtAction
 
     private Action calcExtinguish(FireBrigade agent, PathPlanning pathPlanning, EntityID target)
     {
-        System.out.println("start calcExtinguish");
+        // System.out.println("start calcExtinguish");
         EntityID agentPosition = agent.getPosition();
         StandardEntity positionEntity = Objects.requireNonNull(this.worldInfo.getPosition(agent));
         if (StandardEntityURN.REFUGE == positionEntity.getStandardURN())
@@ -292,7 +292,7 @@ public class ActionFireFighting extends ExtAction
 
     private Action mycalcExtinguish(FireBrigade agent, PathPlanning pathPlanning, EntityID target)
     {
-        System.out.println("start calcExtinguish");
+        // System.out.println("start calcExtinguish");
         EntityID agentPosition = agent.getPosition();
         StandardEntity positionEntity = Objects.requireNonNull(this.worldInfo.getPosition(agent));
 
@@ -310,7 +310,7 @@ public class ActionFireFighting extends ExtAction
             else{
                 location = path.get(path.size() - 1);
             }
-            System.out.println("location is " +location.getValue());
+            // System.out.println("location is " +location.getValue());
             if (agentPosition.getValue()!=location.getValue()) {
                 pathPlanning.setDestination(location);
                 path = pathPlanning.calc().getResult();
@@ -328,11 +328,11 @@ public class ActionFireFighting extends ExtAction
         {
             
             if (((Building)entity).isOnFire()){
-                System.out.println("Try to turn off fire with" + agent.getWater());
+                // System.out.println("Try to turn off fire with" + agent.getWater());
                 return new ActionExtinguish(entity.getID(), this.maxExtinguishPower);
             }
         }
-        System.out.println("Need to move to extinguish fire");
+        // System.out.println("Need to move to extinguish fire");
         return this.getMoveAction(pathPlanning, agentPosition, target);
     }
 
@@ -465,7 +465,7 @@ public class ActionFireFighting extends ExtAction
             this.refillFlag = this.myneedRefill(agent, this.refillFlag); 
             return action;
         }
-        System.out.println("there is no hydrant");
+        // System.out.println("there is no hydrant");
         return new ActionRest();
     }
 
@@ -563,16 +563,16 @@ public class ActionFireFighting extends ExtAction
     public boolean isBusy(){
         FireBrigade agent = (FireBrigade) this.agentInfo.me();
         if (this.refillFlag) {
-            System.out.println("It's busy");
+            // System.out.println("It's busy");
             return true;
         }
         if(this.needRest(agent)){
-            System.out.println("It needs rest");
+            // System.out.println("It needs rest");
             return true;
         }
 
         if (this.target == null) {
-            System.out.println("It's not busy");
+            // System.out.println("It's not busy");
             return false;
         }
         
@@ -590,7 +590,7 @@ public class ActionFireFighting extends ExtAction
                 location = path.get(path.size() - 1);
             }
             if (agentPosition.getValue()!=location.getValue()) {
-                System.out.println("It's need to move");
+                // System.out.println("It's need to move");
                 return true;
             }
         }
@@ -616,15 +616,15 @@ public class ActionFireFighting extends ExtAction
 
         if (neighbourBuilding.size() > 0)
         {
-            System.out.println(neighbourBuilding.size());
+            // System.out.println(neighbourBuilding.size());
             neighbourBuilding.sort(new DistanceSorter(this.worldInfo, agent));
             if(((Building)entity).isOnFire() && agent.getWater()>=this.maxExtinguishPower) {
-                System.out.println("Need to extinguish");
+                // System.out.println("Need to extinguish");
                 return true;
             }
             else {
-                System.out.println("It's finished to extinguish fire or No fire on " + String.valueOf(this.target.getValue()));
-                System.out.println("the thing is" + ((Building)this.worldInfo.getEntity(this.target)).isOnFire());
+                // System.out.println("It's finished to extinguish fire or No fire on " + String.valueOf(this.target.getValue()));
+                // System.out.println("the thing is" + ((Building)this.worldInfo.getEntity(this.target)).isOnFire());
                 return false;
             }
             
@@ -632,10 +632,10 @@ public class ActionFireFighting extends ExtAction
         Action action = this.getMoveAction(pathPlanning, agentPosition, this.target);
         if (action != null && (action instanceof ActionMove))
         {
-            System.out.println("Need to move");
+            // System.out.println("Need to move");
             return true;
         }
-        System.out.println("Nothing to do");
+        // System.out.println("Nothing to do");
         return false;
     }
 
