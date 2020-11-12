@@ -374,7 +374,7 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
         if request.AgentType == 1:
             time.sleep(0.5)
             return RCRS_pb2.ActionType(actionType= 4, x=float(0), y=float(0))
-        if request.AgentType == 2:
+        # if request.AgentType == 2:
         if request.AgentType == 3:
             time.sleep(0.5)
             return RCRS_pb2.ActionType(actionType= 4, x=float(0), y=float(0))
