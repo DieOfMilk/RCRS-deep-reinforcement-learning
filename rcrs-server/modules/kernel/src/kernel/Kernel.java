@@ -340,7 +340,7 @@ public class Kernel {
        @throws LogException If there is a problem writing the log.
     */
     public void timestep() throws InterruptedException, KernelException, LogException {
-        // System.out.println("start timestep on kernel, now the timestep is"+time);
+        System.out.println("start timestep on kernel, now the timestep is"+time);
         try {
             Logger.pushLogContext(KERNEL_LOG_CONTEXT);
             synchronized (this) {
@@ -582,10 +582,9 @@ public class Kernel {
                     // System.out.println("Generate worldproto successfully");
                     ActionType actionType;
                     while(true){
-                        // actionType = blockingStub.withDeadlineAfter(60, TimeUnit.SECONDS).runTimestep(worldInfoProto);
-                        actionType = blockingStub.runTimestep(worldInfoProto);
+                        actionType = blockingStub.withDeadlineAfter(60, TimeUnit.SECONDS).runTimestep(worldInfoProto);
                         if (actionType.getActionType()==0) {
-                            // System.out.println("send obs successfully");
+                            System.out.println("send obs successfully");
                             break;
                         }
                     }
@@ -653,7 +652,7 @@ public class Kernel {
         finally {
             Logger.popLogContext();
         }
-        // System.out.println("one step finished");
+        System.out.println("one step finished");
     }
 
     /**

@@ -7,12 +7,10 @@ requirements = (has_avx2 == true || has_avx == true) && Memory >= 3000
 Notification = Always
 Notify_user = milk@unist.ac.kr
 Input = condor/in.$(Process)
-Output     = condor/out.$(Process)
-Error      = condor/err.$(Process)
 Log        = condor/$(Process).log
 
 
-Queue 5
+Queue 57
 
 
 

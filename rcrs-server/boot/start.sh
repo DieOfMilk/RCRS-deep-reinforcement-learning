@@ -1,5 +1,5 @@
 #!/bin/bash
-trap 'echo "killing..."; echo $PIDS; killfunction;' 15
+trap 'killfunction;' 15
 . functions.sh
 
 function killfunction () {
@@ -21,7 +21,6 @@ startKernel --nomenu --autorun
 startSims
 startViewer
 
-echo "Start your agents"
 waitFor $LOGDIR/kernel.log "Kernel has shut down" 30
 
 wait $!

@@ -521,7 +521,7 @@ class myRunner(AbstractEnvRunner):
                 if isinstance(self.env.action_space, gym.spaces.Box):
                     clipped_actions = np.clip(actions, self.env.action_space.low, self.env.action_space.high)
                 self.env.envs[0].input(clipped_actions[0])
-                print(self.obs)
+                # print(self.obs)
                 tempobs = [self.env.envs[0].convertObs()]
                 actions, values, self.states, neglogpacs = self.model.step(tempobs, self.states, self.dones)
                 mb_obs2.append(tempobs.copy())
@@ -535,7 +535,7 @@ class myRunner(AbstractEnvRunner):
                     clipped_actions = np.clip(actions, self.env.action_space.low, self.env.action_space.high)
                 self.env.envs[0].input(clipped_actions[0])
 
-            print(clipped_actions)
+            # print(clipped_actions)
             self.obs[:], rewards, self.dones, infos = self.env.envs[0].step()
             if infos[0]['idNumber'] == 2:
                 self.obs[:] = [self.env.envs[0].convertObs()]
@@ -543,7 +543,8 @@ class myRunner(AbstractEnvRunner):
                 self.env.envs[0].reset()
                 self.episode_num+=1
                 self.finalFireNumber.append(infos[0]['finalFireNumber'])
-                if self.episode_num%50==0:
+                self.finalFireNumber.append(infos[0]['totalFieryness'])
+                if self.episode_num%5==0:
                     temp_data_path = os.path.join(Path(self.ppo.save_path).parent,str(self.episode_num))
                     self.ppo.save(temp_data_path)
 

@@ -17,7 +17,7 @@ function waitFor {
         SLEEP_TIME=$4
     fi
     F=$FREQUENCY
-    echo "Waiting for '$1' to exist..."
+    # echo "Waiting for '$1' to exist..."
     while [[ ! -e $1 ]]; do
         if (( --F == 0 )); then
             # echo "Still waiting for '$1' to exist..."
@@ -25,7 +25,7 @@ function waitFor {
         fi
         sleep $SLEEP_TIME
     done
-    echo "Waiting for '$2'..."
+    # echo "Waiting for '$2'..."
     while [ -z "`grep \"$2\" \"$1\"`" ]; do
         if (( --F == 0 )); then
             # echo "Still waiting for '$2'..."
@@ -186,7 +186,6 @@ function startKernel {
     
     KERNEL_OPTIONS="-c $CONFIGDIR/kernel.cfg -p $PORTNUMBER -r $GRPCNO --gis.map.dir=$MAP --kernel.logname=$LOGDIR/rescue.log $GUI_OPTION $*"
     makeClasspath $BASEDIR/jars $BASEDIR/lib
-    echo "$CP"
     execute kernel "java -Xmx2048m -cp $CP -Dlog4j.log.dir=$LOGDIR kernel.StartKernel $KERNEL_OPTIONS"
     # Wait for the kernel to start
     waitFor $LOGDIR/kernel.log "Listening for connections"

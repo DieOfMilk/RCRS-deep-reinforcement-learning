@@ -55,7 +55,7 @@ class RCRSEnv(gym.Env):
     def step(self):
         # self.timeStamp +=1
         self.total_step +=1
-        # print("start step. Total step is : {}".format(self.total_step))
+        print("start step. Total step is : {}".format(self.total_step))
         self.done= False
         self.run_action()
         while True:
@@ -163,6 +163,7 @@ class RCRSEnv(gym.Env):
         self.connection.inputAction(action_list)
 
     def reset(self):
+        self.prevObs = None
         self.action = [None,None]
         self.busy = [2,2]
         self.reward = [0,0]
@@ -180,9 +181,9 @@ class RCRSEnv(gym.Env):
         self.server = None
         self.connection = None
         self.timeStamp = -1
-        time.sleep(5)
+        time.sleep(1)
         self.server, self.connection  = self.serve(self.grpcNo)
-        time.sleep(5)
+        time.sleep(1)
         logName = self.mapName
         
         origin_map_path = './../rcrs-server/maps/gml/bigTest3'
@@ -212,7 +213,7 @@ class RCRSEnv(gym.Env):
         else:
             self.kernel = subprocess.Popen("./start.sh -l {} -m {} -c {} -p {} -r {} -g".format(logpath,mapfile,common_path,self.portNo,self.grpcNo).split(), 
             shell=False, cwd = "./../rcrs-server/boot")
-        time.sleep(15)
+        time.sleep(8)
         self.connection.set_step_finished() 
         self.agent = subprocess.Popen("./launch.sh -all -s localhost:{} -r {}".format(self.portNo, self.grpcNo).split(),shell=False, cwd = "./../rcrs-grpc-demo")
         # for _ in range(1):
@@ -224,17 +225,17 @@ class RCRSEnv(gym.Env):
                 # self.agent.wait()
                 # self.agent = subprocess.Popen("./launch.sh -all -s localhost:{} -r {}".format(self.portNo, self.grpcNo).split(),shell=False, cwd = "./../rcrs-grpc-demo")
         self.obs = self.connection.getObs(900,0.1)
-        self.prevObs1 = self.obs.copy()
-        self.prevObs2 = self.obs.copy()
+        self.prevObs1=self.obs.copy()
+        self.prevObs2=self.obs.copy()
         self.busy = self.connection.getBusy(900,0.1)
-        self.obs=np.append(self.obs,self.busy[0])
+        self.obs=np.append(self.obs,self.busy)
         self.input(self.buildingNo)
         self.input(self.buildingNo)
         self.step()
         self.input(self.buildingNo)
         self.input(self.buildingNo)
-        self.step()
         return self.normalization(self.obs)
+
     def input(self,action):
         if self.action[0] == None:
             self.action[0] = action
@@ -288,7 +289,7 @@ class RCRSEnv(gym.Env):
         common_path = os.path.join(mapfile, 'config')
         mapfile = os.path.join(mapfile, 'map')
         self.kernel = subprocess.Popen(["xterm","-e","./start.sh -l {} -m {} -c {} -p {} -r {}".format(logpath,mapfile,common_path,self.portNo,self.grpcNo)], shell=False, cwd = "./../rcrs-server/boot")
-        time.sleep(15)
+        time.sleep(8)
         self.agent = subprocess.Popen(["xterm","-e","./launch.sh -all -s localhost:{} -r {}".format(self.portNo, self.grpcNo)],shell=False, cwd = "./../rcrs-grpc-demo")
         self.connection.set_step_finished()
         self.wait_request(900,0.1) ## wait until action request
