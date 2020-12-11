@@ -73,9 +73,10 @@ If you want to see how simulator works, set `verbose=True` when you call env.
 ```
 env = gym.make("RCRS-v0", portNo=portNo, grpcNo=grpcNo, buildingNo=36, maxTimeStamp=99,mapName=mapName,verbose=True) (line 182)
 ```
-You can check the `data.pkl` through `script/graph.py` and see how model works through `script/load_PPO2.py`.
-`script/graph.py` will show sum of reward per one episode(99 steps) and `script/load_PPO2.py` will show model results 10 times.
-To use both, just input the `mapName` what you want to check. 
+`script/compare_result.py` will compare 'model.zip' performance in the `script/log/RCRS_*` files, and print the result. Thus, you can find the best performance log using it.
+After compare the result, please modify `script/performance_test.py` to see the running curve. You should change the range at line 48, `for j in range(50):`. After fix the range, run the `script/performance_test.py` and input log file name and gamma value of the log file. Then, it will run temperal policy per 50 episodes and generate `result.pkl` files.
+You can check the `result.pkl` through `script/graph_*.py`.
+`script/graph_reward.py` will show sum of reward per one episode(35 steps), `script/graph_fieryness.py` will show sum of fieryness of all buildings at the end of episodes, and `script/graph_fired_building.py` will show the number of remaining fired buildings at the end of episodes.
 
 
 ## 5. How to run on condor
@@ -87,6 +88,7 @@ You may need to use virtual environment to control your python envrionment in co
 You can see the sample files at `script/condor_scripts/`. 
 ```
 cpu_test.condor : condor script to run on cpu (If you want to remove gpu perfectly, use can add condition 'GPUs==0' or 'GPU == false'
+cpu_test_nooutput.condor : This condor script doesn't generate output and error files. 
 gpu_test.condor : condor script to run on GPU
 start.sh : bash script to call modify_PPO2.py. *If should be same directory with modify_PPO2.py*
 generate.py : simple script to generate input files for condor.
@@ -110,6 +112,7 @@ Below is example sturucture on condor.
 ./
 ├── condor                                  // condor log, input output locations
 ├── cpu_test.condor                         // condor files
+├── cpu_test_nooutput.condor                // This file doesn't generate output, err files. 
 ├── gpu_test.condor
 ├── RCRS-deep-reinforcement-learning        //github files
 │   ├── rcrs-grpc-demo 
@@ -126,5 +129,5 @@ Before submit condor files, we should generate "in." files, which are input file
 * When your codes failed on condor, please change port numbers. Sometimes, port number duplication was happended. 
 * Be sure that every nodes should use different map names with each others. If duplication happended, generated log files will be crashed and RCRS server will terminated. 
 * Be careful that in this version, if the condor job is suspended over 5 mintues, it will terminate automatically even in the gpu test. Next version I will fix that limitation. 
-* This model save temperal policy after every 50 episode. If you want to modifiy this frequency, please modify `script/models/myPPO2.py` line 546, `if self.episode_num%50==0:`.
+* This model save temperal policy after every 50 episode. If you want to change this frequency, please modify `script/models/myPPO2.py` line 546, `if self.episode_num%50==0:`.
 
