@@ -10,7 +10,7 @@ Input = condor/in.$(Process)
 Log        = condor/$(Process).log
 
 
-Queue 57
+Queue 5
 
 
 
