@@ -130,4 +130,7 @@ Before submit condor files, we should generate "in." files, which are input file
 * Be sure that every nodes should use different map names with each others. If duplication happended, generated log files will be crashed and RCRS server will terminated. 
 * Be careful that in this version, if the condor job is suspended over 5 mintues, it will terminate automatically even in the gpu test. Next version I will fix that limitation. 
 * This model save temperal policy after every 50 episode. If you want to change this frequency, please modify `script/models/myPPO2.py` line 546, `if self.episode_num%50==0:`.
+* Every temperal policy take some disk, and it may cause disk capacity problem if you don't have enough space. 
+* Output and error files take much disk. Please run cpu_test_noputput.condor to run multi condor execution.
+
 
