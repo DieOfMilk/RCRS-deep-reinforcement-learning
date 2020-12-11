@@ -24,18 +24,19 @@ if __name__=='__main__':
         total = pickle.load(f)
     new_total=[]
     for i in total:
-        new_total.append(sum(i)/3)
-    gready = []
-    for _ in range(10,990,20):
-        gready.append(-1)
-
+        # new_total.append(sum(i[1::3])/3)
+        new_total.append(sum(i[2::3])/3)
+    max_greedy = []
+    min_greedy=[]
+    for _ in range(50,1300,50):
+        min_greedy.append(sum([32,  31,   37])/3)
     matplotlib.rcParams.update({'font.size':30})
 
-    plt.plot(range(10,990,20),new_total, label="PPO")
-    plt.plot(range(10,990,20),gready, label="greedy methods")
+    plt.plot(range(50,1300,50),new_total, label="PPO")
+    plt.plot(range(50,1300,50),min_greedy, label="greedy methods")
     plt.xlabel("Episode Number",fontsize=48)
-    plt.ylabel("Total Sum of Rewards",fontsize=48)
-    plt.xticks(range(0,1000,50))
+    plt.ylabel("Total Fieryness",fontsize=48)
+    plt.xticks(range(50,1300,50))
     plt.legend(loc="lower right",fontsize=24)
     plt.gcf().subplots_adjust(top=0.96, bottom=0.122, right=0.98, left=0.11)
     plt.show()
