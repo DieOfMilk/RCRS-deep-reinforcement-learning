@@ -491,9 +491,9 @@ class SimpleConnection(RCRS_pb2_grpc.SimpleConnectionServicer):
             if i.uRN=="FireBrigade":
                 for j in range(len(self.agentList)):
                     if i.iD == self.agentList[j]:
-                        temp[j*1]=i.water
-                        temp[j*1+1]=i.x
-                        temp[j*1+2]=i.y
+                        temp[j*3]=i.water
+                        temp[j*3+1]=i.x
+                        temp[j*3+2]=i.y
                         break
                 # for j in range(len(self.agentList)):
                 #     if self.agentList[j] == i.iD:
