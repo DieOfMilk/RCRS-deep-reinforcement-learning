@@ -393,10 +393,10 @@ class RCRSEnv(gym.Env):
                 else:
                     final_obs.append(obs[i]/8)
             else:
-                if (i-2*self.buildingNo)%3==0:
-                    final_obs.append(obs[i]/self.maxWater)
-                elif i==len(obs)-1:
+                if i==len(obs)-1:
                     final_obs.append(obs[i]-1)
+                elif (i-2*self.buildingNo)%3==0:
+                    final_obs.append(obs[i]/self.maxWater)
                 else:
                     final_obs.append(obs[i]/self.maxMapSize)
         return final_obs
